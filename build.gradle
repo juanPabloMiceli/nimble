@@ -1,0 +1,63 @@
+buildscript {
+	repositories {
+		mavenCentral()
+	}
+
+	dependencies {
+		classpath("io.spring.javaformat:spring-javaformat-gradle-plugin:0.0.29")
+	}
+
+}
+
+plugins {
+	id 'org.springframework.boot' version '2.6.1'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'java'
+}
+
+apply plugin: 'io.spring.javaformat'
+
+group = 'com'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+ext{
+	springBootVersion = "2.6.1"
+	jUnitVersion = "5.8.2"
+	jacksonVersion = '2.13.0'
+}
+
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+	implementation 'org.jetbrains:annotations:20.1.0'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	//Junit
+	testImplementation "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
+	testImplementation "org.junit.jupiter:junit-jupiter-api:${jUnitVersion}"
+	testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${jUnitVersion}"
+
+	//Jackson
+	implementation "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
+	implementation "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"
+
+	implementation group: 'org.springframework', name: 'spring-messaging', version: '5.3.13'
+
+}
+
+test {
+	useJUnitPlatform()
+}
