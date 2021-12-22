@@ -3,10 +3,7 @@ package com.nimble.model;
 import com.nimble.exceptions.deck.EmptyDeckException;
 import com.nimble.model.enums.ValidCardColors;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Stack;
+import java.util.*;
 
 public class Deck {
 
@@ -34,39 +31,33 @@ public class Deck {
 		}
 
 		Collections.shuffle(cards);
-
 		return new Deck(cards);
-
 	}
 
-	public Card peek() {
-		assertDeckIsNotEmpty();
-		return cards.peek();
-	}
-
-
-	public Card draw() {
-		Card card = peek();
-		cards.pop();
-		return card;
-	}
-
-	public Stack<Card> getCards() {
-		return cards;
-	}
 
 	public int size() {
-		return getCards().size();
+		return cards.size();
 	}
 
 	public void add(Card card) {
 		cards.push(card);
 	}
 
-	private void assertDeckIsNotEmpty() {
+	public Card draw() {
 		if (cards.size() <= 0) {
 			throw new EmptyDeckException();
 		}
+		return cards.pop();
 	}
 
+	// View if card can be played in this deck
+	public boolean canplay(Card card){
+		try {
+			Card current_card = cards.peek();
+			return current_card.compare(card);
+		}
+		catch(EmptyStackException e) {
+			return  true;
+		}
+	}
 }

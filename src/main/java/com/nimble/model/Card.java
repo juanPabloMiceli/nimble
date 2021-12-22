@@ -7,17 +7,11 @@ import com.nimble.exceptions.card.InvalidOuterCardColorException;
 import com.nimble.utils.ColorUtils;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
 
 public class Card {
-
 	private String innerColor;
-
 	private String outerColor;
-
 	private String backColor;
-
-
 
 	public Card(@NotNull String innerColor, @NotNull String outerColor, @NotNull String backColor) {
 		if (innerColor.equals(outerColor)) {
@@ -32,19 +26,11 @@ public class Card {
 		this(card.innerColor, card.outerColor, card.backColor);
 	}
 
-	public String getInnerColor() {
-		return innerColor;
-	}
-
 	private void setInnerColor(@NotNull String innerColor) {
 		if (!ColorUtils.isValidCardColor(innerColor)) {
 			throw new InvalidInnerCardColorException(innerColor);
 		}
 		this.innerColor = innerColor;
-	}
-
-	public String getOuterColor() {
-		return outerColor;
 	}
 
 	private void setOuterColor(@NotNull String outerColor) {
@@ -54,10 +40,6 @@ public class Card {
 		this.outerColor = outerColor;
 	}
 
-	public String getBackColor() {
-		return backColor;
-	}
-
 	private void setBackColor(String backColor) {
 		if (!ColorUtils.isValidPlayerColor(backColor)) {
 			throw new InvalidBackCardColorException(backColor);
@@ -65,24 +47,17 @@ public class Card {
 		this.backColor = backColor;
 	}
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o)
-			return true;
-		if (!(o instanceof Card))
-			return false;
-		Card card = (Card) o;
-		return getInnerColor().equals(card.getInnerColor()) && getOuterColor().equals(card.getOuterColor())
-				&& getBackColor().equals(card.getBackColor());
+	public String getInnerColor() {
+		return innerColor;
+	}
+	public String getOuterColor() {
+		return outerColor;
+	}
+	public String getBackColor() {
+		return backColor;
 	}
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(getInnerColor(), getOuterColor(), getBackColor());
+	public boolean compare(Card anotherCard) {
+		return  this.outerColor == anotherCard.getInnerColor();
 	}
-
-	public boolean tops(Card anotherCard) {
-		return this.outerColor.equals(anotherCard.getInnerColor());
-	}
-
 }

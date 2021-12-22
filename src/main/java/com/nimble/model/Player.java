@@ -2,16 +2,17 @@ package com.nimble.model;
 
 import com.nimble.exceptions.Player.InvalidPlayerColorException;
 import com.nimble.exceptions.Player.NameMustNotBeEmptyException;
+import com.nimble.exceptions.deck.EmptyDeckException;
 import com.nimble.utils.ColorUtils;
+
+import java.util.EmptyStackException;
 
 public class Player {
 
 	private String name;
-
 	private String color;
 
 	private Deck onHandsDeck;
-
 	private Deck discardDeck;
 	private Card handCard;
 
@@ -20,11 +21,7 @@ public class Player {
 		setColor(color);
 		discardDeck = new Deck();
 		onHandsDeck = Deck.startingDeck(color);
-		handCard = null;
-	}
-
-	public String getName() {
-		return name;
+		handCard = onHandsDeck.draw();
 	}
 
 	public void setName(String name) {
@@ -34,10 +31,6 @@ public class Player {
 		this.name = name;
 	}
 
-	public String getColor() {
-		return color;
-	}
-
 	public void setColor(String color) {
 		if (!ColorUtils.isValidPlayerColor(color)) {
 			throw new InvalidPlayerColorException(color);
@@ -45,30 +38,40 @@ public class Player {
 		this.color = color;
 	}
 
-	public Deck getOnHandsDeck() {
-		return onHandsDeck;
+	public String getName() {
+		return name;
 	}
-
-	public Deck getDiscardDeck() {
-		return discardDeck;
+	public String getColor() {
+		return color;
 	}
-
 	public Card getHandCard() {
 		return handCard;
 	}
 
 	public void draw() {
-		if(onHandsDeck.size() > 0){
+		try {
 			handCard = onHandsDeck.draw();
-		}else{
-			if(handCard == null){
-				while(discardDeck.size() > 0){
-					onHandsDeck.add(discardDeck.draw());
-				}
+		}
+		catch(EmptyDeckException e) {
+			while(discardDeck.size() > 0){
+				onHandsDeck.add(discardDeck.draw());
 			}
 		}
+	}
 
+	//Player plays his hand card
+	public void play(Deck deckBoard){
+		if(!deckBoard.canplay(this.handCard)){
+			// throw an error
+		}
 
+		deckBoard.add(this.handCard);
+		draw();
+	}
+
+	public void discard(){
+		discardDeck.add(this.handCard);
+		draw();
 	}
 
 }
