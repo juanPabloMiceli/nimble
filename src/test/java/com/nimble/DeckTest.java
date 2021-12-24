@@ -8,9 +8,12 @@ import com.nimble.model.enums.ValidPlayerColors;
 import com.nimble.model.enums.ValidCardColors;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * {@link Deck}
@@ -38,91 +41,144 @@ public class DeckTest {
 
 	@Test
 	public void Test04_DeckInitializedWithCollectionHasCorrespondingSizeAndOrder() {
-		Card card1 = new Card(ValidCardColors.YELLOW.name(), ValidCardColors.ORANGE.name(),
-				ValidPlayerColors.RED.name());
-		Card card2 = new Card(ValidCardColors.YELLOW.name(), ValidCardColors.ORANGE.name(),
-				ValidPlayerColors.BLUE.name());
-		Card card3 = new Card(ValidCardColors.YELLOW.name(), ValidCardColors.ORANGE.name(),
-				ValidPlayerColors.GREEN.name());
-		Card card4 = new Card(ValidCardColors.YELLOW.name(), ValidCardColors.ORANGE.name(),
-				ValidPlayerColors.ORANGE.name());
-		ArrayList<Card> cards = new ArrayList<>(List.of(card1, card2, card3, card4));
+
+		List<String> innerColors = getInnerColors();
+		List<String> outerColors = getOuterColors();
+
+		List<Card> cards = getCards(innerColors, outerColors);
 
 		Deck deck = new Deck(cards);
+		int totalCards = deck.size();
 
-		Assertions.assertEquals(cards, deck.getCards());
-		Assertions.assertEquals(4, deck.size());
+		Assertions.assertEquals(totalCards, deck.size());
+		assertDeckEqualsList(deck, innerColors, outerColors);
 	}
 
 	@Test
 	public void Test05_PeekCardReturnsCardOnTopButDoesNotModifyDeck() {
-		Card card = new Card(ValidCardColors.YELLOW.name(), ValidCardColors.ORANGE.name(),
-				ValidPlayerColors.RED.name());
-		ArrayList<Card> cards = new ArrayList<>(List.of(card));
-		Deck deck = new Deck(cards);
 
-		Assertions.assertEquals(card, deck.peek());
-		Assertions.assertEquals(cards, deck.getCards());
-		Assertions.assertEquals(1, deck.size());
+		List<String> innerColors = getInnerColors();
+		List<String> outerColors = getOuterColors();
+
+		List<Card> cards = getCards(innerColors, outerColors);
+
+		Deck deck = new Deck(cards);
+		int totalCards = deck.size();
+
+		Assertions.assertEquals(totalCards, deck.size());
+		assertDeckEqualsList(deck, innerColors, outerColors);
 
 	}
 
 	@Test
 	public void Test06_DrawCardReturnsCardOnTopAndRemovesTopCardsFromDeck() {
-		Card card1 = new Card(ValidCardColors.YELLOW.name(), ValidCardColors.ORANGE.name(),
-				ValidPlayerColors.RED.name());
-		Card card2 = new Card(ValidCardColors.YELLOW.name(), ValidCardColors.ORANGE.name(),
-				ValidPlayerColors.BLUE.name());
-		ArrayList<Card> cards = new ArrayList<>(List.of(card1, card2));
+
+		List<String> innerColors = getInnerColors();
+		List<String> outerColors = getOuterColors();
+
+		List<Card> cards = getCards(innerColors, outerColors);
+
 		Deck deck = new Deck(cards);
+		int totalCards = deck.size();
 
-		Assertions.assertEquals(card2, deck.draw());
-		Assertions.assertEquals(new ArrayList<>(List.of(card1)), deck.getCards());
-		Assertions.assertEquals(1, deck.size());
+		Card drawedCard = deck.draw();
+		totalCards--;
+
+		Assertions.assertEquals(totalCards, deck.size());
+		assertCardEquals(drawedCard, innerColors.get(totalCards), outerColors.get(totalCards));
+		innerColors.remove(totalCards);
+		outerColors.remove(totalCards);
+
+		assertDeckEqualsList(deck, innerColors, outerColors);
 
 	}
 
 	@Test
-	public void Test08_TopCardChangesAfterAddingNewCard() {
-		Card card1 = new Card(ValidCardColors.YELLOW.name(), ValidCardColors.ORANGE.name(),
-				ValidPlayerColors.RED.name());
-		Card card2 = new Card(ValidCardColors.ORANGE.name(), ValidCardColors.RED.name(),
-				ValidPlayerColors.RED.name());
-		Card card3 = new Card(ValidCardColors.RED.name(), ValidCardColors.GREEN.name(),
-				ValidPlayerColors.RED.name());
-		ArrayList<Card> cards = new ArrayList<>(List.of(card1, card2));
+	public void Test07_AddingCardAddsItToTheTopOfTheDeck() {
+
+		List<String> innerColors = getInnerColors();
+		List<String> outerColors = getOuterColors();
+
+		List<Card> cards = getCards(innerColors, outerColors);
+
+		Card cardToAdd = cards.remove(cards.size()-1);
 		Deck deck = new Deck(cards);
-		deck.add(card3);
+		int totalCards = deck.size();
 
-		Assertions.assertEquals(new ArrayList<>(List.of(card1, card2, card3)), deck.getCards());
-		Assertions.assertEquals(3, deck.size());
+		deck.add(cardToAdd);
+		totalCards++;
+		Assertions.assertEquals(totalCards, deck.size());
+		assertDeckEqualsList(deck, innerColors, outerColors);
 
 	}
 
 	@Test
-	public void Test09_StartingDeckMustHaveValidColor() {
-		Assertions.assertThrows(InvalidBackCardColorException.class,
-				() -> Deck.startingDeck("invalid color").size());
+	public void Test8_StartingDeckSizeIs30() {
+		Assertions.assertEquals(30, Deck.startingDeck().size());
 	}
 
 	@Test
-	public void Test10_StartingDeckSizeIs30() {
-		Assertions.assertEquals(30, Deck.startingDeck(ValidPlayerColors.RED.name()).size());
+	public void Test9_StartingDeckHasNoRepeatedCards() {
+
+		Deck startingDeck = Deck.startingDeck();
+		int deckSize = startingDeck.size();
+
+		Assertions.assertEquals(deckSize, deckToSet(startingDeck).size());
 	}
 
-	@Test
-	public void Test12_EveryBackColorInStartingDeckIsTheChosenOne() {
-		Deck.startingDeck(ValidPlayerColors.RED.name()).getCards().forEach(
-				(nimbleCard) -> Assertions.assertEquals(ValidPlayerColors.RED.name(), nimbleCard.getBackColor()));
+	/**
+	 * Private methods
+	 */
+
+	private void assertCardEquals(Card card, String innerColor, String outerColor){
+		Assertions.assertEquals(innerColor, card.getInnerColor());
+		Assertions.assertEquals(outerColor, card.getOuterColor());
 	}
 
-	@Test
-	public void Test13_StartingDeckHasNoRepeatedCards() {
 
-		Deck startingDeck = Deck.startingDeck(ValidPlayerColors.RED.name());
-		Stack<Card> startingCards = startingDeck.getCards();
+	private void assertTopCard(Deck deck, String innerColor, String outerColor){
+		Card card = deck.peek();
+		assertCardEquals(card, innerColor, outerColor);
+	}
 
-		Assertions.assertEquals(startingCards.size(), new HashSet<>(startingCards).size());
+	private void assertAndDrawTopCard(Deck deck, String innerColor, String outerColor){
+		assertTopCard(deck, innerColor, outerColor);
+		deck.draw();
+	}
+
+	private List<String> getInnerColors(){
+		return Arrays.stream(ValidCardColors.values()).map(ValidCardColors::name).collect(Collectors.toList());
+	}
+
+	private List<String> getOuterColors(){
+		List<String> colors = getInnerColors();
+		colors.add(colors.remove(0));
+		return colors;
+	}
+
+	private List<Card> getCards(List<String> innerColors, List<String> outerColors){
+		List<Card> cards = new ArrayList<>();
+		for(int i = 0; i < innerColors.size(); i++){
+			cards.add(new Card(innerColors.get(i), outerColors.get(i)));
+		}
+		return cards;
+	}
+
+	private void assertDeckEqualsList(Deck deck, List<String> innerColors, List<String> outerColors){
+		int n = deck.size();
+		while(n > 0){
+			n--;
+			assertAndDrawTopCard(deck, innerColors.get(n), outerColors.get(n));
+		}
+	}
+
+	private Set<Card> deckToSet(Deck deck){
+		Set<Card> cards = new HashSet<>();
+		while(!deck.isEmpty()){
+			cards.add(deck.draw());
+		}
+
+		return cards;
 	}
 
 }

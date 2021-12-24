@@ -18,7 +18,7 @@ public class Deck {
 		this.cards.addAll(cards);
 	}
 
-	public static Deck startingDeck(String backColor) {
+	public static Deck startingDeck() {
 
 		ArrayList<Card> cards = new ArrayList<>();
 
@@ -26,7 +26,7 @@ public class Deck {
 			for (ValidCardColors outerColor : ValidCardColors.values()) {
 				if (innerColor.equals(outerColor))
 					continue;
-				cards.add(new Card(innerColor.name(), outerColor.name(), backColor));
+				cards.add(new Card(innerColor.name(), outerColor.name()));
 			}
 		}
 
@@ -39,25 +39,34 @@ public class Deck {
 		return cards.size();
 	}
 
+	public Boolean isEmpty(){
+		return cards.size() == 0;
+	}
+
 	public void add(Card card) {
 		cards.push(card);
 	}
 
 	public Card draw() {
-		if (cards.size() <= 0) {
+		if (cards.isEmpty()) {
 			throw new EmptyDeckException();
 		}
 		return cards.pop();
 	}
 
+	public Card peek() {
+		if (cards.isEmpty()) {
+			throw new EmptyDeckException();
+		}
+		return cards.peek();
+	}
+
 	// View if card can be played in this deck
 	public boolean canplay(Card card){
-		try {
-			Card current_card = cards.peek();
-			return current_card.compare(card);
+		if(cards.isEmpty()){
+			throw new RuntimeException("wut");
 		}
-		catch(EmptyStackException e) {
-			return  true;
-		}
+		Card current_card = cards.peek();
+		return current_card.compare(card);
 	}
 }

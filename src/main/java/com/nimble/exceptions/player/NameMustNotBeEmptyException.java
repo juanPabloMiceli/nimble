@@ -1,4 +1,4 @@
-package com.nimble.exceptions.Player;
+package com.nimble.exceptions.player;
 
 public class NameMustNotBeEmptyException extends RuntimeException {
 

@@ -20,72 +20,33 @@ public class CardTest {
 	@Test
 	public void Test01_InnerColorCanNotBeInvalid() {
 		Assertions.assertThrows(InvalidInnerCardColorException.class,
-				() -> new Card("invalid color", ValidCardColors.BLUE.name(), ValidPlayerColors.ORANGE.name()));
+				() -> new Card("invalid color", ValidCardColors.BLUE.name()));
 	}
 
 	@Test
 	public void Test02_OuterColorCanNotBeInvalid() {
 		Assertions.assertThrows(InvalidOuterCardColorException.class,
-				() -> new Card(ValidCardColors.BLUE.name(), "invalid color", ValidPlayerColors.ORANGE.name()));
+				() -> new Card(ValidCardColors.BLUE.name(), "invalid color"));
 	}
 
 	@Test
 	public void Test03_InnerColorEqualsOuterColorIsAnInvalidCard() {
 		Assertions.assertThrows(InnerColorSameAsOuterColorException.class,
-				() -> new Card(ValidCardColors.BLUE.name(), ValidCardColors.BLUE.name(),
-						ValidPlayerColors.ORANGE.name()));
+				() -> new Card(ValidCardColors.BLUE.name(), ValidCardColors.BLUE.name()));
 	}
 
 	@Test
-	public void Test04_BackColorCanNotBeInvalid() {
-		Assertions.assertThrows(InnerColorSameAsOuterColorException.class,
-				() -> new Card(ValidCardColors.BLUE.name(), ValidCardColors.BLUE.name(), "invalid color"));
+	public void Test04_CardComparesTrueWhenItsOuterColorMatchesAnotherCardInnerColor() {
+		Card card1 = new Card(ValidCardColors.BLUE.name(), ValidCardColors.ORANGE.name());
+		Card card2 = new Card(ValidCardColors.ORANGE.name(), ValidCardColors.GREEN.name());
+		Assertions.assertTrue(card1.compare(card2));
 	}
 
 	@Test
-	public void Test05_CardsWithSameFrontAndBackColorsAreConsiderEquals() {
-		Card card1 = new Card(ValidCardColors.BLUE.name(), ValidCardColors.ORANGE.name(),
-				ValidPlayerColors.GREEN.name());
-		Card card2 = new Card(ValidCardColors.BLUE.name(), ValidCardColors.ORANGE.name(),
-				ValidPlayerColors.GREEN.name());
-		Assertions.assertEquals(card1, card2);
-	}
-
-	@Test
-	public void Test06_CardsWithSameFrontAndDifferentBackColorsAreNotConsiderEquals() {
-		Card card1 = new Card(ValidCardColors.BLUE.name(), ValidCardColors.ORANGE.name(),
-				ValidPlayerColors.GREEN.name());
-		Card card2 = new Card(ValidCardColors.BLUE.name(), ValidCardColors.ORANGE.name(),
-				ValidPlayerColors.RED.name());
-		Assertions.assertNotEquals(card1, card2);
-	}
-
-	@Test
-	public void Test07_CardWhoseOuterColorMatchesAnotherCardInnerColorTopsIt() {
-		Card card1 = new Card(ValidCardColors.BLUE.name(), ValidCardColors.ORANGE.name(),
-				ValidPlayerColors.GREEN.name());
-		Card card2 = new Card(ValidCardColors.ORANGE.name(), ValidCardColors.GREEN.name(),
-				ValidPlayerColors.RED.name());
-		Assertions.assertTrue(card1.tops(card2));
-	}
-
-	@Test
-	public void Test08_CardWhoseOuterColorDoesNotMatchAnotherCardInnerColorDoesNotTopIt() {
-		Card card1 = new Card(ValidCardColors.BLUE.name(), ValidCardColors.ORANGE.name(),
-				ValidPlayerColors.GREEN.name());
-		Card card2 = new Card(ValidCardColors.ORANGE.name(), ValidCardColors.GREEN.name(),
-				ValidPlayerColors.RED.name());
-		Assertions.assertFalse(card2.tops(card1));
-	}
-
-	@Test
-	public void Test15_CardCopyClonesCard(){
-		Card card = new Card(ValidCardColors.BLUE.name(), ValidCardColors.ORANGE.name(),
-				ValidPlayerColors.GREEN.name());
-		Card cardCopy = new Card(card);
-
-		Assertions.assertEquals(card, cardCopy);
-		Assertions.assertNotSame(card, cardCopy);
+	public void Test05_CardComparesFalseWhenItsOuterColorDoesNotMatchAnotherCardInnerColor() {
+		Card card1 = new Card(ValidCardColors.BLUE.name(), ValidCardColors.ORANGE.name());
+		Card card2 = new Card(ValidCardColors.ORANGE.name(), ValidCardColors.GREEN.name());
+		Assertions.assertFalse(card2.compare(card1));
 	}
 
 }

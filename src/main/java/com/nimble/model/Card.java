@@ -1,29 +1,31 @@
 package com.nimble.model;
 
 import com.nimble.exceptions.card.InnerColorSameAsOuterColorException;
-import com.nimble.exceptions.card.InvalidBackCardColorException;
 import com.nimble.exceptions.card.InvalidInnerCardColorException;
 import com.nimble.exceptions.card.InvalidOuterCardColorException;
+import com.nimble.model.enums.ValidCardColors;
 import com.nimble.utils.ColorUtils;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 
 public class Card {
 	private String innerColor;
 	private String outerColor;
-	private String backColor;
 
-	public Card(@NotNull String innerColor, @NotNull String outerColor, @NotNull String backColor) {
+	public Card(@NotNull String innerColor, @NotNull String outerColor) {
 		if (innerColor.equals(outerColor)) {
 			throw new InnerColorSameAsOuterColorException(innerColor, outerColor);
 		}
 		setInnerColor(innerColor);
 		setOuterColor(outerColor);
-		setBackColor(backColor);
 	}
 
 	public Card(Card card) {
-		this(card.innerColor, card.outerColor, card.backColor);
+		this(card.innerColor, card.outerColor);
 	}
 
 	private void setInnerColor(@NotNull String innerColor) {
@@ -40,24 +42,20 @@ public class Card {
 		this.outerColor = outerColor;
 	}
 
-	private void setBackColor(String backColor) {
-		if (!ColorUtils.isValidPlayerColor(backColor)) {
-			throw new InvalidBackCardColorException(backColor);
-		}
-		this.backColor = backColor;
-	}
-
 	public String getInnerColor() {
 		return innerColor;
 	}
 	public String getOuterColor() {
 		return outerColor;
 	}
-	public String getBackColor() {
-		return backColor;
-	}
 
 	public boolean compare(Card anotherCard) {
-		return  this.outerColor == anotherCard.getInnerColor();
+		return  this.outerColor.equals(anotherCard.getInnerColor());
+	}
+
+	public static Card random(){
+		List<ValidCardColors> validColors = Arrays.asList(ValidCardColors.values());
+		Collections.shuffle(validColors);
+		return new Card(validColors.get(0).name(), validColors.get(1).name());
 	}
 }

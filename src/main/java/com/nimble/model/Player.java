@@ -1,77 +1,90 @@
 package com.nimble.model;
 
-import com.nimble.exceptions.Player.InvalidPlayerColorException;
-import com.nimble.exceptions.Player.NameMustNotBeEmptyException;
-import com.nimble.exceptions.deck.EmptyDeckException;
-import com.nimble.utils.ColorUtils;
-
-import java.util.EmptyStackException;
-
 public class Player {
-
-	private String name;
-	private String color;
 
 	private Deck onHandsDeck;
 	private Deck discardDeck;
 	private Card handCard;
 
-	public Player(String name, String color) {
-		setName(name);
-		setColor(color);
+	public Player() {
+		//TODO: Tendria sentido pasar estos parametros desde el constructor?
 		discardDeck = new Deck();
-		onHandsDeck = Deck.startingDeck(color);
-		handCard = onHandsDeck.draw();
+		onHandsDeck = Deck.startingDeck();
+		handCard = null;
 	}
 
-	public void setName(String name) {
-		if (name.isEmpty()) {
-			throw new NameMustNotBeEmptyException();
-		}
-		this.name = name;
-	}
-
-	public void setColor(String color) {
-		if (!ColorUtils.isValidPlayerColor(color)) {
-			throw new InvalidPlayerColorException(color);
-		}
-		this.color = color;
-	}
-
-	public String getName() {
-		return name;
-	}
-	public String getColor() {
-		return color;
-	}
 	public Card getHandCard() {
 		return handCard;
 	}
 
+	public Card getDiscardTop(){
+		return discardDeck.peek();
+	}
+
+	public int getTotalCards(){
+		return discardDeck.size() + onHandsDeck.size() + (hasCardOnHand() ? 1 : 0);
+	}
+
 	public void draw() {
-		try {
-			handCard = onHandsDeck.draw();
-		}
-		catch(EmptyDeckException e) {
-			while(discardDeck.size() > 0){
-				onHandsDeck.add(discardDeck.draw());
+
+		if(onHandsDeck.isEmpty()){
+			if(hasCardOnHand()){
+				//Hay que pasar la carta de la mano al descarte y nada mas
+				discardDeck.add(handCard);
+				handCard = null;
+
+			}else{
+				//Hay que pasar el pilon de descarte a la mano
+				while (!discardDeck.isEmpty()){
+					onHandsDeck.add(discardDeck.draw());
+				}
 			}
+		}else{
+			if(hasCardOnHand()){
+				//Si tengo una carta en la mano la tengo que pasar al mazo de descarte
+				discardDeck.add(handCard);
+				handCard = null;
+			}
+			//Como el mazo de la mano tiene cartas agarro una y la paso a la mano
+			handCard = onHandsDeck.draw();
 		}
 	}
 
 	//Player plays his hand card
-	public void play(Deck deckBoard){
+	public Boolean playHandCard(Deck deckBoard){
 		if(!deckBoard.canplay(this.handCard)){
-			// throw an error
+			return false;
 		}
 
 		deckBoard.add(this.handCard);
+		this.handCard = null;
 		draw();
+		return true;
 	}
 
-	public void discard(){
-		discardDeck.add(this.handCard);
-		draw();
+	public Boolean playDiscardCard(Deck deckBoard){
+		if(!deckBoard.canplay(discardDeck.peek())){
+			return false;
+		}
+
+		deckBoard.add(discardDeck.draw());
+		return true;
+	}
+
+	public Boolean hasEnded(){
+		return !hasCardOnHand() && discardDeck.isEmpty() && onHandsDeck.isEmpty();
+	}
+
+	public int getDiscardDeckSize(){
+		return discardDeck.size();
+	}
+
+	public int getOnHandsDeckSize(){
+		return onHandsDeck.size();
+	}
+
+	public Boolean hasCardOnHand(){
+		return handCard != null;
 	}
 
 }
