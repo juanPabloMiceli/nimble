@@ -1,13 +1,13 @@
 package com.nimble;
 
-import com.nimble.exceptions.Player.InvalidPlayerColorException;
-import com.nimble.exceptions.Player.NameMustNotBeEmptyException;
 import com.nimble.model.Card;
+import com.nimble.model.Deck;
 import com.nimble.model.Player;
-import com.nimble.model.enums.ValidPlayerColors;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
@@ -19,119 +19,61 @@ import java.util.ArrayList;
 @SpringBootTest
 public class PlayerTest {
 
-	@Test
-	public void Test01_EmptyNameIsInvalid() {
-		Assertions.assertThrows(NameMustNotBeEmptyException.class, () -> new Player("", ValidPlayerColors.BLUE.name()));
-	}
+    @Mock
+    Deck centerDeck = Mockito.mock(Deck.class);
 
 	@Test
-	public void Test02_PlayerColorMustBeValid() {
-		Assertions.assertThrows(InvalidPlayerColorException.class, () -> new Player("name", "invalid color"));
-	}
-
-	@Test
-	public void Test03_PlayerGetsChosenNameAndColor(){
-		Player player = new Player("name", ValidPlayerColors.BLUE.name());
-		Assertions.assertEquals("name", player.getName());
-		Assertions.assertEquals(ValidPlayerColors.BLUE.name(), player.getColor());
-	}
-
-	@Test
-	public void Test04_PlayerStartsWithEmptyDiscardDeck() {
+	public void Test01_PlayerStartsWithEmptyDiscardDeck() {
 		Player player = getPlayer();
-		Assertions.assertEquals(0, player.getDiscardDeck().size());
+		Assertions.assertEquals(0, player.getDiscardDeckSize());
 	}
 
 	@Test void Test05_PlayerStartsWithNoCardInHand(){
 		Player player = getPlayer();
-		Assertions.assertNull(player.getHandCard());
+		Assertions.assertFalse(player.hasCardOnHand());
 	}
 
 	@Test
-	public void Test06_PlayerStartsWithAllCardsInTheirHands() {
+	public void Test06_PlayerStartsWithAllCardsInHisHands() {
 		Player player = getPlayer();
-		Assertions.assertEquals(30, player.getOnHandsDeck().size());
-	}
-
-	@Test
-	public void Test07_WhenOnHandsDeckIsNotEmptyDrawCardDecreasesSizeByOne(){
-		Player player = getPlayer();
-
-		int startingOnHandsSize = player.getOnHandsDeck().size();
-		int i = 1;
-
-		while(player.getOnHandsDeck().size() > 0){
-			player.draw();
-			Assertions.assertEquals(startingOnHandsSize-i, player.getOnHandsDeck().size());
-			i++;
-		}
-
-		Assertions.assertEquals(31, i);
+		Assertions.assertEquals(30, player.getOnHandsDeckSize());
 	}
 
 //	@Test
-//	public void Test08_WhenOnHandsDeckIsNotEmptyDrawCardMovesTopCardToHandAndFlipsItFacingUp() {
-//		Player player = getPlayer();
-//
-//		Card topCard = new Card(player.getOnHandsDeck().peek());
-//		topCard.flip();
-//
-//		player.draw();
-//
-//		Assertions.assertTrue(player.getHandCard().isVisible());
-//		Assertions.assertEquals(topCard, player.getHandCard());
-//	}
-
-//	@Test
-//	public void Test09_WhenThereIsMoreThanOneCardOnHandsDeckDrawCardLeavesTopCardFacingDown() {
+//	public void Test07_WhenOnHandsDeckIsNotEmptyDrawTakesTopCardAndPutIsInPlayerHand(){
 //		Player player = getPlayer();
 //
 //		player.draw();
-//
-//		Assertions.assertFalse(player.getOnHandsDeck().peek().isVisible());
 //	}
+//
+    @Test
+    public void TestXX_AfterSuccessfulPlayFromHandPlayerHasOneCardLess(){
+        Player player = getPlayer();
+        int startingCards = player.getTotalCards();
+        player.draw();
+
+        Mockito.when(centerDeck.canplay(player.getHandCard())).thenReturn(true);
+        player.playHandCard(centerDeck);
+
+        Assertions.assertEquals(startingCards-1, player.getTotalCards());
+    }
 
 	@Test
-	public void Test10_WhenThereIsNotOnHandCardDrawCardDoesNotChangeDiscardDeck() {
+	public void TestXX_AfterUnsuccessfulPlayFromHandPlayerSameAmountOfCards(){
 		Player player = getPlayer();
-
-		ArrayList<Card> initialDiscardCards = new ArrayList<>(){};
-		initialDiscardCards.addAll(player.getDiscardDeck().getCards());
-
+		int startingCards = player.getTotalCards();
 		player.draw();
 
-		Assertions.assertEquals(initialDiscardCards, player.getDiscardDeck().getCards());
+		Mockito.when(centerDeck.canplay(player.getHandCard())).thenReturn(false);
+		player.playHandCard(centerDeck);
+
+		Assertions.assertEquals(startingCards, player.getTotalCards());
 	}
 
-	@Test
-	public void Test11_WhenThereIsNotOnHandCardAndOnHandsDeckIsEmptyDrawCardEmptiesDiscardDeck() {
-		Player player = getPlayer();
-
-		while(player.getOnHandsDeck().size() > 0){
-			player.draw();
-		}
-
-		player.draw();
-
-		Assertions.assertEquals(0, player.getDiscardDeck().size());
-	}
-
-	@Test
-	public void Test12_WhenThereIsNotOnHandCardAndOnHandsDeckIsEmptyDrawCardEmptiesDiscardDeck() {
-		Player player = getPlayer();
-
-		while(player.getOnHandsDeck().size() > 0){
-			player.draw();
-		}
-
-		player.draw();
-
-		Assertions.assertEquals(0, player.getDiscardDeck().size());
-	}
 
 	@NotNull
 	private Player getPlayer() {
-		return new Player("name", ValidPlayerColors.BLUE.name());
+		return new Player();
 	}
 
 }

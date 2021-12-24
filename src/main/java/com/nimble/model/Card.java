@@ -1,39 +1,31 @@
 package com.nimble.model;
 
 import com.nimble.exceptions.card.InnerColorSameAsOuterColorException;
-import com.nimble.exceptions.card.InvalidBackCardColorException;
 import com.nimble.exceptions.card.InvalidInnerCardColorException;
 import com.nimble.exceptions.card.InvalidOuterCardColorException;
+import com.nimble.model.enums.ValidCardColors;
 import com.nimble.utils.ColorUtils;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 
 public class Card {
-
 	private String innerColor;
-
 	private String outerColor;
 
-	private String backColor;
-
-
-
-	public Card(@NotNull String innerColor, @NotNull String outerColor, @NotNull String backColor) {
+	public Card(@NotNull String innerColor, @NotNull String outerColor) {
 		if (innerColor.equals(outerColor)) {
 			throw new InnerColorSameAsOuterColorException(innerColor, outerColor);
 		}
 		setInnerColor(innerColor);
 		setOuterColor(outerColor);
-		setBackColor(backColor);
 	}
 
 	public Card(Card card) {
-		this(card.innerColor, card.outerColor, card.backColor);
-	}
-
-	public String getInnerColor() {
-		return innerColor;
+		this(card.innerColor, card.outerColor);
 	}
 
 	private void setInnerColor(@NotNull String innerColor) {
@@ -43,10 +35,6 @@ public class Card {
 		this.innerColor = innerColor;
 	}
 
-	public String getOuterColor() {
-		return outerColor;
-	}
-
 	private void setOuterColor(@NotNull String outerColor) {
 		if (!ColorUtils.isValidCardColor(outerColor)) {
 			throw new InvalidOuterCardColorException(outerColor);
@@ -54,35 +42,20 @@ public class Card {
 		this.outerColor = outerColor;
 	}
 
-	public String getBackColor() {
-		return backColor;
+	public String getInnerColor() {
+		return innerColor;
+	}
+	public String getOuterColor() {
+		return outerColor;
 	}
 
-	private void setBackColor(String backColor) {
-		if (!ColorUtils.isValidPlayerColor(backColor)) {
-			throw new InvalidBackCardColorException(backColor);
-		}
-		this.backColor = backColor;
+	public boolean compare(Card anotherCard) {
+		return  this.outerColor.equals(anotherCard.getInnerColor());
 	}
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o)
-			return true;
-		if (!(o instanceof Card))
-			return false;
-		Card card = (Card) o;
-		return getInnerColor().equals(card.getInnerColor()) && getOuterColor().equals(card.getOuterColor())
-				&& getBackColor().equals(card.getBackColor());
+	public static Card random(){
+		List<ValidCardColors> validColors = Arrays.asList(ValidCardColors.values());
+		Collections.shuffle(validColors);
+		return new Card(validColors.get(0).name(), validColors.get(1).name());
 	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(getInnerColor(), getOuterColor(), getBackColor());
-	}
-
-	public boolean tops(Card anotherCard) {
-		return this.outerColor.equals(anotherCard.getInnerColor());
-	}
-
 }

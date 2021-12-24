@@ -3,10 +3,7 @@ package com.nimble.model;
 import com.nimble.exceptions.deck.EmptyDeckException;
 import com.nimble.model.enums.ValidCardColors;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Stack;
+import java.util.*;
 
 public class Deck {
 
@@ -21,7 +18,7 @@ public class Deck {
 		this.cards.addAll(cards);
 	}
 
-	public static Deck startingDeck(String backColor) {
+	public static Deck startingDeck() {
 
 		ArrayList<Card> cards = new ArrayList<>();
 
@@ -29,44 +26,47 @@ public class Deck {
 			for (ValidCardColors outerColor : ValidCardColors.values()) {
 				if (innerColor.equals(outerColor))
 					continue;
-				cards.add(new Card(innerColor.name(), outerColor.name(), backColor));
+				cards.add(new Card(innerColor.name(), outerColor.name()));
 			}
 		}
 
 		Collections.shuffle(cards);
-
 		return new Deck(cards);
-
 	}
 
-	public Card peek() {
-		assertDeckIsNotEmpty();
-		return cards.peek();
-	}
-
-
-	public Card draw() {
-		Card card = peek();
-		cards.pop();
-		return card;
-	}
-
-	public Stack<Card> getCards() {
-		return cards;
-	}
 
 	public int size() {
-		return getCards().size();
+		return cards.size();
+	}
+
+	public Boolean isEmpty(){
+		return cards.size() == 0;
 	}
 
 	public void add(Card card) {
 		cards.push(card);
 	}
 
-	private void assertDeckIsNotEmpty() {
-		if (cards.size() <= 0) {
+	public Card draw() {
+		if (cards.isEmpty()) {
 			throw new EmptyDeckException();
 		}
+		return cards.pop();
 	}
 
+	public Card peek() {
+		if (cards.isEmpty()) {
+			throw new EmptyDeckException();
+		}
+		return cards.peek();
+	}
+
+	// View if card can be played in this deck
+	public boolean canplay(Card card){
+		if(cards.isEmpty()){
+			throw new RuntimeException("wut");
+		}
+		Card current_card = cards.peek();
+		return current_card.compare(card);
+	}
 }
