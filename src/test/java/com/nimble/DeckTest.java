@@ -101,7 +101,7 @@ public class DeckTest {
 
 		List<Card> cards = getCards(innerColors, outerColors);
 
-		Card cardToAdd = cards.remove(cards.size()-1);
+		Card cardToAdd = cards.remove(cards.size() - 1);
 		Deck deck = new Deck(cards);
 		int totalCards = deck.size();
 
@@ -130,51 +130,50 @@ public class DeckTest {
 	 * Private methods
 	 */
 
-	private void assertCardEquals(Card card, String innerColor, String outerColor){
+	private void assertCardEquals(Card card, String innerColor, String outerColor) {
 		Assertions.assertEquals(innerColor, card.getInnerColor());
 		Assertions.assertEquals(outerColor, card.getOuterColor());
 	}
 
-
-	private void assertTopCard(Deck deck, String innerColor, String outerColor){
+	private void assertTopCard(Deck deck, String innerColor, String outerColor) {
 		Card card = deck.peek();
 		assertCardEquals(card, innerColor, outerColor);
 	}
 
-	private void assertAndDrawTopCard(Deck deck, String innerColor, String outerColor){
+	private void assertAndDrawTopCard(Deck deck, String innerColor, String outerColor) {
 		assertTopCard(deck, innerColor, outerColor);
 		deck.draw();
 	}
 
-	private List<String> getInnerColors(){
+	private List<String> getInnerColors() {
 		return Arrays.stream(ValidCardColors.values()).map(ValidCardColors::name).collect(Collectors.toList());
 	}
 
-	private List<String> getOuterColors(){
+	private List<String> getOuterColors() {
 		List<String> colors = getInnerColors();
 		colors.add(colors.remove(0));
 		return colors;
 	}
 
-	private List<Card> getCards(List<String> innerColors, List<String> outerColors){
+	private List<Card> getCards(List<String> innerColors, List<String> outerColors) {
 		List<Card> cards = new ArrayList<>();
-		for(int i = 0; i < innerColors.size(); i++){
+		for (int i = 0; i < innerColors.size(); i++) {
 			cards.add(new Card(innerColors.get(i), outerColors.get(i)));
 		}
 		return cards;
 	}
 
-	private void assertDeckEqualsList(Deck deck, List<String> innerColors, List<String> outerColors){
+	private void assertDeckEqualsList(Deck deck, List<String> innerColors, List<String> outerColors) {
 		int n = deck.size();
-		while(n > 0){
+		while (n > 0) {
 			n--;
 			assertAndDrawTopCard(deck, innerColors.get(n), outerColors.get(n));
 		}
 	}
 
-	private Set<Card> deckToSet(Deck deck){
+	private Set<Card> deckToSet(Deck deck) {
 		Set<Card> cards = new HashSet<>();
-		while(!deck.isEmpty()){
+		while (!deck.isEmpty()) {
 			cards.add(deck.draw());
 		}
 

@@ -11,9 +11,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-
 public class Card {
+
 	private String innerColor;
+
 	private String outerColor;
 
 	public Card(@NotNull String innerColor, @NotNull String outerColor) {
@@ -45,17 +46,19 @@ public class Card {
 	public String getInnerColor() {
 		return innerColor;
 	}
+
 	public String getOuterColor() {
 		return outerColor;
 	}
 
 	public boolean compare(Card anotherCard) {
-		return  this.outerColor.equals(anotherCard.getInnerColor());
+		return this.outerColor.equals(anotherCard.getInnerColor());
 	}
 
-	public static Card random(){
+	public static Card random() {
 		List<ValidCardColors> validColors = Arrays.asList(ValidCardColors.values());
 		Collections.shuffle(validColors);
 		return new Card(validColors.get(0).name(), validColors.get(1).name());
 	}
+
 }

@@ -34,12 +34,11 @@ public class Deck {
 		return new Deck(cards);
 	}
 
-
 	public int size() {
 		return cards.size();
 	}
 
-	public Boolean isEmpty(){
+	public Boolean isEmpty() {
 		return cards.size() == 0;
 	}
 
@@ -62,11 +61,12 @@ public class Deck {
 	}
 
 	// View if card can be played in this deck
-	public boolean canplay(Card card){
-		if(cards.isEmpty()){
+	public boolean canplay(Card card) {
+		if (cards.isEmpty()) {
 			throw new RuntimeException("wut");
 		}
 		Card current_card = cards.peek();
 		return current_card.compare(card);
 	}
+
 }
