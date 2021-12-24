@@ -3,11 +3,13 @@ package com.nimble.model;
 public class Player {
 
 	private Deck onHandsDeck;
+
 	private Deck discardDeck;
+
 	private Card handCard;
 
 	public Player() {
-		//TODO: Tendria sentido pasar estos parametros desde el constructor?
+		// TODO: Tendria sentido pasar estos parametros desde el constructor?
 		discardDeck = new Deck();
 		onHandsDeck = Deck.startingDeck();
 		handCard = null;
@@ -17,42 +19,44 @@ public class Player {
 		return handCard;
 	}
 
-	public Card getDiscardTop(){
+	public Card getDiscardTop() {
 		return discardDeck.peek();
 	}
 
-	public int getTotalCards(){
+	public int getTotalCards() {
 		return discardDeck.size() + onHandsDeck.size() + (hasCardOnHand() ? 1 : 0);
 	}
 
 	public void draw() {
 
-		if(onHandsDeck.isEmpty()){
-			if(hasCardOnHand()){
-				//Hay que pasar la carta de la mano al descarte y nada mas
+		if (onHandsDeck.isEmpty()) {
+			if (hasCardOnHand()) {
+				// Hay que pasar la carta de la mano al descarte y nada mas
 				discardDeck.add(handCard);
 				handCard = null;
 
-			}else{
-				//Hay que pasar el pilon de descarte a la mano
-				while (!discardDeck.isEmpty()){
+			}
+			else {
+				// Hay que pasar el pilon de descarte a la mano
+				while (!discardDeck.isEmpty()) {
 					onHandsDeck.add(discardDeck.draw());
 				}
 			}
-		}else{
-			if(hasCardOnHand()){
-				//Si tengo una carta en la mano la tengo que pasar al mazo de descarte
+		}
+		else {
+			if (hasCardOnHand()) {
+				// Si tengo una carta en la mano la tengo que pasar al mazo de descarte
 				discardDeck.add(handCard);
 				handCard = null;
 			}
-			//Como el mazo de la mano tiene cartas agarro una y la paso a la mano
+			// Como el mazo de la mano tiene cartas agarro una y la paso a la mano
 			handCard = onHandsDeck.draw();
 		}
 	}
 
-	//Player plays his hand card
-	public Boolean playHandCard(Deck deckBoard){
-		if(!deckBoard.canplay(this.handCard)){
+	// Player plays his hand card
+	public Boolean playHandCard(Deck deckBoard) {
+		if (!deckBoard.canplay(this.handCard)) {
 			return false;
 		}
 
@@ -62,8 +66,8 @@ public class Player {
 		return true;
 	}
 
-	public Boolean playDiscardCard(Deck deckBoard){
-		if(!deckBoard.canplay(discardDeck.peek())){
+	public Boolean playDiscardCard(Deck deckBoard) {
+		if (!deckBoard.canplay(discardDeck.peek())) {
 			return false;
 		}
 
@@ -71,19 +75,19 @@ public class Player {
 		return true;
 	}
 
-	public Boolean hasEnded(){
+	public Boolean hasEnded() {
 		return !hasCardOnHand() && discardDeck.isEmpty() && onHandsDeck.isEmpty();
 	}
 
-	public int getDiscardDeckSize(){
+	public int getDiscardDeckSize() {
 		return discardDeck.size();
 	}
 
-	public int getOnHandsDeckSize(){
+	public int getOnHandsDeckSize() {
 		return onHandsDeck.size();
 	}
 
-	public Boolean hasCardOnHand(){
+	public Boolean hasCardOnHand() {
 		return handCard != null;
 	}
 

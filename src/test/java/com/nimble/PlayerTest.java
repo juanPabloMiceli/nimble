@@ -12,15 +12,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
 
-
 /**
  * {@link Player}
  */
 @SpringBootTest
 public class PlayerTest {
 
-    @Mock
-    Deck centerDeck = Mockito.mock(Deck.class);
+	@Mock
+	Deck centerDeck = Mockito.mock(Deck.class);
 
 	@Test
 	public void Test01_PlayerStartsWithEmptyDiscardDeck() {
@@ -28,7 +27,8 @@ public class PlayerTest {
 		Assertions.assertEquals(0, player.getDiscardDeckSize());
 	}
 
-	@Test void Test05_PlayerStartsWithNoCardInHand(){
+	@Test
+	void Test05_PlayerStartsWithNoCardInHand() {
 		Player player = getPlayer();
 		Assertions.assertFalse(player.hasCardOnHand());
 	}
@@ -39,27 +39,27 @@ public class PlayerTest {
 		Assertions.assertEquals(30, player.getOnHandsDeckSize());
 	}
 
-//	@Test
-//	public void Test07_WhenOnHandsDeckIsNotEmptyDrawTakesTopCardAndPutIsInPlayerHand(){
-//		Player player = getPlayer();
-//
-//		player.draw();
-//	}
-//
-    @Test
-    public void TestXX_AfterSuccessfulPlayFromHandPlayerHasOneCardLess(){
-        Player player = getPlayer();
-        int startingCards = player.getTotalCards();
-        player.draw();
+	// @Test
+	// public void Test07_WhenOnHandsDeckIsNotEmptyDrawTakesTopCardAndPutIsInPlayerHand(){
+	// Player player = getPlayer();
+	//
+	// player.draw();
+	// }
+	//
+	@Test
+	public void TestXX_AfterSuccessfulPlayFromHandPlayerHasOneCardLess() {
+		Player player = getPlayer();
+		int startingCards = player.getTotalCards();
+		player.draw();
 
-        Mockito.when(centerDeck.canplay(player.getHandCard())).thenReturn(true);
-        player.playHandCard(centerDeck);
+		Mockito.when(centerDeck.canplay(player.getHandCard())).thenReturn(true);
+		player.playHandCard(centerDeck);
 
-        Assertions.assertEquals(startingCards-1, player.getTotalCards());
-    }
+		Assertions.assertEquals(startingCards - 1, player.getTotalCards());
+	}
 
 	@Test
-	public void TestXX_AfterUnsuccessfulPlayFromHandPlayerSameAmountOfCards(){
+	public void TestXX_AfterUnsuccessfulPlayFromHandPlayerSameAmountOfCards() {
 		Player player = getPlayer();
 		int startingCards = player.getTotalCards();
 		player.draw();
@@ -69,7 +69,6 @@ public class PlayerTest {
 
 		Assertions.assertEquals(startingCards, player.getTotalCards());
 	}
-
 
 	@NotNull
 	private Player getPlayer() {
