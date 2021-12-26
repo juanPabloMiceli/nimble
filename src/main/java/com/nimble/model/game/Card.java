@@ -1,4 +1,4 @@
-package com.nimble.model;
+package com.nimble.model.game;
 
 import com.nimble.exceptions.card.InnerColorSameAsOuterColorException;
 import com.nimble.exceptions.card.InvalidInnerCardColorException;
@@ -26,7 +26,11 @@ public class Card {
 	}
 
 	public Card(Card card) {
-		this(card.innerColor, card.outerColor);
+		if (card == null) {
+			return;
+		}
+		innerColor = card.innerColor;
+		outerColor = card.outerColor;
 	}
 
 	private void setInnerColor(@NotNull String innerColor) {
@@ -51,8 +55,8 @@ public class Card {
 		return outerColor;
 	}
 
-	public boolean compare(Card anotherCard) {
-		return this.outerColor.equals(anotherCard.getInnerColor());
+	public boolean canBePlayedAfter(Card anotherCard) {
+		return this.outerColor.equals(anotherCard.innerColor);
 	}
 
 	public static Card random() {
