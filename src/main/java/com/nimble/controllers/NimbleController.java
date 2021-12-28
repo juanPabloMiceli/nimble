@@ -1,6 +1,5 @@
 package com.nimble.controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.nimble.dtos.protocols.*;
 import com.nimble.model.User;
 import com.nimble.services.NimbleService;
@@ -32,8 +31,8 @@ public class NimbleController {
 		nimbleService.start(payload.getLobbyId(), new User(session, payload.getName()));
 	}
 
-	public void draw(WebSocketSession session, DrawPayload payload) {
-		nimbleService.draw(payload.getLobbyId(), new User(session, payload.getName()));
+	public void discard(WebSocketSession session, DiscardPayload payload) {
+		nimbleService.discard(payload.getLobbyId(), new User(session, payload.getName()));
 	}
 
 	public void play(WebSocketSession session, PlayPayload payload) {

@@ -35,11 +35,11 @@ public class Game {
 		decksBoard = game.decksBoard;
 	}
 
-	public void draw(int playerNumber) {
+	public void discard(int playerNumber) {
 		if (playerNumber >= players.size()) {
 			throw new InvalidPlayerNumberException(playerNumber);
 		}
-		players.get(playerNumber).draw();
+		players.get(playerNumber).discard();
 	}
 
 	public Boolean playOnHandCard(int playerNumber, int deckNumber) {
@@ -84,7 +84,7 @@ public class Game {
 	}
 
 	public Card getDiscardTop(int index) {
-		return new Card(players.get(index).getDiscardTop());
+		return new Card(players.get(index).peekDiscardDeck());
 	}
 
 	public int getOnHandsDeckSize(int index) {
@@ -96,7 +96,7 @@ public class Game {
 	}
 
 	public int getTotalCards(int index) {
-		return players.get(index).getTotalCards();
+		return players.get(index).totalCards();
 	}
 
 	public int totalPlayers() {

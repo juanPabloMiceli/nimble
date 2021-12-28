@@ -12,10 +12,9 @@ public class Player {
 	private Card handCard;
 
 	public Player() {
-		// TODO: Tendria sentido pasar estos parametros desde el constructor?
 		discardDeck = new Deck();
 		onHandsDeck = Deck.startingDeck();
-		handCard = null;
+		handCard = draw();
 	}
 
 	public Player(Player player) {
@@ -31,40 +30,30 @@ public class Player {
 		return handCard;
 	}
 
-	public Card getDiscardTop() {
+	public Card peekDiscardDeck() {
 		return discardDeck.peek();
 	}
 
-	public int getTotalCards() {
-		return discardDeck.size() + onHandsDeck.size() + (hasCardOnHand() ? 1 : 0);
+	public int totalCards() {
+		return discardDeck.size() + onHandsDeck.size() + 1;
 	}
 
-	public void draw() {
-		// TODO: Repensar para discard
+	public void discard() {
+		discardDeck.add(handCard);
+		handCard = draw();
+	}
 
+	private Card draw() {
 		if (onHandsDeck.isEmpty()) {
-			if (hasCardOnHand()) {
-				// Hay que pasar la carta de la mano al descarte y nada mas
-				discardDeck.add(handCard);
-				handCard = null;
+			// Como no tengo de donde agarrar paso el mazo del descarte a la mano
+			// invirtiendo su orden:
+			while (!discardDeck.isEmpty()) {
+				onHandsDeck.add(discardDeck.draw());
+			}
 
-			}
-			else {
-				// Hay que pasar el pilon de descarte a la mano
-				while (!discardDeck.isEmpty()) {
-					onHandsDeck.add(discardDeck.draw());
-				}
-			}
 		}
-		else {
-			if (hasCardOnHand()) {
-				// Si tengo una carta en la mano la tengo que pasar al mazo de descarte
-				discardDeck.add(handCard);
-				handCard = null;
-			}
-			// Como el mazo de la mano tiene cartas agarro una y la paso a la mano
-			handCard = onHandsDeck.draw();
-		}
+		// Saco la primer carta del mazo y la devuelvo
+		return onHandsDeck.draw();
 	}
 
 	// Player plays his hand card
@@ -74,7 +63,6 @@ public class Player {
 		}
 
 		deckBoard.add(this.handCard);
-		this.handCard = null;
 		draw();
 		return true;
 	}
@@ -89,7 +77,7 @@ public class Player {
 	}
 
 	public Boolean hasEnded() {
-		return !hasCardOnHand() && discardDeck.isEmpty() && onHandsDeck.isEmpty();
+		return discardDeck.isEmpty() && onHandsDeck.isEmpty();
 	}
 
 	public int getDiscardDeckSize() {
@@ -98,10 +86,6 @@ public class Player {
 
 	public int getOnHandsDeckSize() {
 		return onHandsDeck.size();
-	}
-
-	public Boolean hasCardOnHand() {
-		return handCard != null;
 	}
 
 }

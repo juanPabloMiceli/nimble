@@ -1,8 +1,6 @@
 package com.nimble.model;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nimble.dtos.LobbyDto;
 import com.nimble.exceptions.lobby.UserAlreadyInLobbyException;
 import com.nimble.exceptions.lobby.UserDoesNotBelongToLobbyException;
 import com.nimble.model.game.Game;
@@ -82,8 +80,8 @@ public class Lobby {
 		return new ArrayList<>(users);
 	}
 
-	public void draw(User user) {
-		game.draw(getPlayerNumber(user));
+	public void discard(User user) {
+		game.discard(getPlayerNumber(user));
 	}
 
 	public Boolean playFromHand(User user, int playTo) {

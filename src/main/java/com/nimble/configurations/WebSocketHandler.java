@@ -53,8 +53,8 @@ public class WebSocketHandler extends TextWebSocketHandler {
 		case "start":
 			nimbleController.start(session, mapper.readValue(payload, StartPayload.class));
 			break;
-		case "draw":
-			nimbleController.draw(session, mapper.readValue(payload, DrawPayload.class));
+		case "discard":
+			nimbleController.discard(session, mapper.readValue(payload, DiscardPayload.class));
 			break;
 		case "play":
 			nimbleController.play(session, mapper.readValue(payload, PlayPayload.class));

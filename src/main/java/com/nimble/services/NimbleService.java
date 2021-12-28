@@ -59,13 +59,13 @@ public class NimbleService {
 		logger.info(String.format("Se inició el lobby \"%s\"", lobbyId));
 	}
 
-	public void draw(String lobbyId, User user) {
+	public void discard(String lobbyId, User user) {
 		if (!lobbyId.equals(lobby.getId())) {
 			logger.error(
 					String.format("%s quiere levantar de un lobby \"%s\" que no existe!", user.getName(), lobbyId));
 			return;
 		}
-		lobby.draw(user);
+		lobby.discard(user);
 		broadcastState(lobby);
 		logger.info(String.format("%s levantó una carta", user.getName()));
 	}

@@ -10,7 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class DrawPayload {
+public class DiscardPayload {
 
 	private String method;
 

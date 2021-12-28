@@ -28,9 +28,9 @@ public class PlayerDto {
 			return;
 		}
 		onHandsDeck = new DeckDto(null, player.getOnHandsDeckSize());
-		discardDeck = new DeckDto(new CardDto(player.getDiscardTop()), player.getDiscardDeckSize());
+		discardDeck = new DeckDto(new CardDto(player.peekDiscardDeck()), player.getDiscardDeckSize());
 		handCard = new CardDto(player.getHandCard());
-		totalCards = player.getTotalCards();
+		totalCards = player.totalCards();
 	}
 
 }
