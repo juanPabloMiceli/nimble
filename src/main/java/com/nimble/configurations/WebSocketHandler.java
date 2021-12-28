@@ -26,7 +26,6 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
 	private final Logger logger = LoggerFactory.getLogger(NimbleService.class);
 
-
 	public WebSocketHandler(NimbleController nimbleController) {
 		this.nimbleController = nimbleController;
 		this.mapper = new ObjectMapper();
@@ -41,7 +40,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 		String method = (String) jsonObject.get("method");
 
 		logger.info(String.format("%s sended method: %s", session.getRemoteAddress(), method));
-		switch (method) {//TODO: Puede mejorar con un factory
+		switch (method) {// TODO: Puede mejorar con un factory
 		case "create":
 			nimbleController.create(session, mapper.readValue(payload, CreatePayload.class));
 			break;

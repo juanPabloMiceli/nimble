@@ -21,7 +21,6 @@ public class NimbleService {
 
 	private final Logger logger = LoggerFactory.getLogger(NimbleService.class);
 
-
 	public void create(String lobbyId, User user) {
 		lobby = new Lobby(lobbyId, user);
 		broadcastState(lobby);

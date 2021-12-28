@@ -13,7 +13,7 @@ public class CreatePayload {
 	private String method;
 
 	@JsonProperty("lobby_id")
-	private String lobbyId;//TODO: Autogenerar y devolver al usuario
+	private String lobbyId;// TODO: Autogenerar y devolver al usuario
 
 	private String name;
 

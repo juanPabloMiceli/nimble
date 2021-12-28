@@ -20,7 +20,7 @@ public class Lobby {
 
 	private List<User> users = new ArrayList<>();
 
-	private ObjectMapper mapper;//TODO: sacar porque ya lo tiene el service
+	private ObjectMapper mapper;// TODO: sacar porque ya lo tiene el service
 
 	public Lobby(String id, User user) {
 		this.id = id;
@@ -89,7 +89,8 @@ public class Lobby {
 	public Boolean playFromHand(User user, int playTo) {
 		return game.playOnHandCard(getPlayerNumber(user), playTo);
 	}
-	//TODO: playTo renombrar por algo mas declarativo
+
+	// TODO: playTo renombrar por algo mas declarativo
 	public Boolean playFromDiscard(User user, int playTo) {
 		return game.playDiscardCard(getPlayerNumber(user), playTo);
 	}
