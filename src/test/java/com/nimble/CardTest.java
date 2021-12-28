@@ -3,8 +3,7 @@ package com.nimble;
 import com.nimble.exceptions.card.InnerColorSameAsOuterColorException;
 import com.nimble.exceptions.card.InvalidInnerCardColorException;
 import com.nimble.exceptions.card.InvalidOuterCardColorException;
-import com.nimble.model.Card;
-import com.nimble.model.enums.ValidPlayerColors;
+import com.nimble.model.game.Card;
 import com.nimble.model.enums.ValidCardColors;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -39,14 +38,14 @@ public class CardTest {
 	public void Test04_CardComparesTrueWhenItsOuterColorMatchesAnotherCardInnerColor() {
 		Card card1 = new Card(ValidCardColors.BLUE.name(), ValidCardColors.ORANGE.name());
 		Card card2 = new Card(ValidCardColors.ORANGE.name(), ValidCardColors.GREEN.name());
-		Assertions.assertTrue(card1.compare(card2));
+		Assertions.assertTrue(card1.canBePlayedAfter(card2));
 	}
 
 	@Test
 	public void Test05_CardComparesFalseWhenItsOuterColorDoesNotMatchAnotherCardInnerColor() {
 		Card card1 = new Card(ValidCardColors.BLUE.name(), ValidCardColors.ORANGE.name());
 		Card card2 = new Card(ValidCardColors.ORANGE.name(), ValidCardColors.GREEN.name());
-		Assertions.assertFalse(card2.compare(card1));
+		Assertions.assertFalse(card2.canBePlayedAfter(card1));
 	}
 
 }

@@ -1,16 +1,13 @@
 package com.nimble;
 
-import com.nimble.model.Card;
-import com.nimble.model.Deck;
-import com.nimble.model.Player;
+import com.nimble.model.game.Deck;
+import com.nimble.model.game.Player;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.ArrayList;
 
 /**
  * {@link Player}

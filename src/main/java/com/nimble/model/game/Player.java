@@ -1,5 +1,8 @@
-package com.nimble.model;
+package com.nimble.model.game;
 
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 public class Player {
 
 	private Deck onHandsDeck;
@@ -15,6 +18,15 @@ public class Player {
 		handCard = null;
 	}
 
+	public Player(Player player) {
+		if (player == null) {
+			return;
+		}
+		discardDeck = player.discardDeck;
+		onHandsDeck = player.onHandsDeck;
+		handCard = player.handCard;
+	}
+
 	public Card getHandCard() {
 		return handCard;
 	}
@@ -28,6 +40,7 @@ public class Player {
 	}
 
 	public void draw() {
+		// TODO: Repensar para discard
 
 		if (onHandsDeck.isEmpty()) {
 			if (hasCardOnHand()) {

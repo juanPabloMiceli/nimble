@@ -1,4 +1,4 @@
-package com.nimble.model;
+package com.nimble.model.game;
 
 import com.nimble.exceptions.deck.EmptyDeckException;
 import com.nimble.model.enums.ValidCardColors;
@@ -7,7 +7,7 @@ import java.util.*;
 
 public class Deck {
 
-	private final Stack<Card> cards;
+	private Stack<Card> cards;
 
 	public Deck() {
 		cards = new Stack<>();
@@ -16,6 +16,14 @@ public class Deck {
 	public Deck(Collection<Card> cards) {
 		this.cards = new Stack<>();
 		this.cards.addAll(cards);
+	}
+
+	public Deck(Deck deck) {
+		if (deck == null) {
+			return;
+		}
+
+		this.cards = deck.cards;
 	}
 
 	public static Deck startingDeck() {
@@ -55,7 +63,8 @@ public class Deck {
 
 	public Card peek() {
 		if (cards.isEmpty()) {
-			throw new EmptyDeckException();
+			// throw new EmptyDeckException();
+			return null;
 		}
 		return cards.peek();
 	}
@@ -65,8 +74,7 @@ public class Deck {
 		if (cards.isEmpty()) {
 			throw new RuntimeException("wut");
 		}
-		Card current_card = cards.peek();
-		return current_card.compare(card);
+		return card.canBePlayedAfter(cards.peek());
 	}
 
 }

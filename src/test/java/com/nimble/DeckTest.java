@@ -1,15 +1,11 @@
 package com.nimble;
 
-import com.nimble.exceptions.card.InvalidBackCardColorException;
 import com.nimble.exceptions.deck.EmptyDeckException;
-import com.nimble.model.Card;
-import com.nimble.model.Deck;
-import com.nimble.model.enums.ValidPlayerColors;
+import com.nimble.model.game.Card;
+import com.nimble.model.game.Deck;
 import com.nimble.model.enums.ValidCardColors;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.*;
@@ -28,9 +24,9 @@ public class DeckTest {
 	}
 
 	@Test
-	public void Test02_CanNotPeekCardFromEmptyDeck() {
+	public void Test02_PeekCardFromEmptyDeckReturnsNoCard() {
 		Deck deck = new Deck();
-		Assertions.assertThrows(EmptyDeckException.class, deck::peek);
+		Assertions.assertNull(deck.peek());
 	}
 
 	@Test

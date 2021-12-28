@@ -1,24 +1,38 @@
-package com.nimble.model;
+package com.nimble.model.game;
 
 import com.nimble.exceptions.game.InvalidDeckNumberException;
 import com.nimble.exceptions.game.InvalidPlayerNumberException;
+import lombok.AllArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@AllArgsConstructor
 public class Game {
 
-	private ArrayList<Player> players = new ArrayList<>();
+	private ArrayList<Player> players;
 
-	private ArrayList<Deck> decksBoard = new ArrayList<>();
+	private ArrayList<Deck> decksBoard;
 
 	public Game(int nPlayers, int nDecks) {
+		players = new ArrayList<>();
+		decksBoard = new ArrayList<>();
 		for (int i = 0; i < nPlayers; i++) {
 			players.add(new Player());
 		}
 		for (int i = 0; i < nDecks; i++) {
 			decksBoard.add(new Deck(List.of(Card.random())));
 		}
+	}
+
+	public Game(Game game) {
+		// TODO: investigar factory pattern
+		if (game == null) {
+			return;
+		}
+
+		players = game.players;
+		decksBoard = game.decksBoard;
 	}
 
 	public void draw(int playerNumber) {
@@ -48,7 +62,7 @@ public class Game {
 		return players.get(playerNumber).playDiscardCard(decksBoard.get(deckNumber));
 	}
 
-	public Card getTopCard(int index) {
+	public Card getDeckBoardTopCard(int index) {
 		return decksBoard.get(index).peek();
 	}
 
@@ -63,6 +77,34 @@ public class Game {
 			}
 		}
 		return -1;
+	}
+
+	public Card getHandCard(int index) {
+		return new Card(players.get(index).getHandCard());
+	}
+
+	public Card getDiscardTop(int index) {
+		return new Card(players.get(index).getDiscardTop());
+	}
+
+	public int getOnHandsDeckSize(int index) {
+		return players.get(index).getOnHandsDeckSize();
+	}
+
+	public int getDiscardDeckSize(int index) {
+		return players.get(index).getDiscardDeckSize();
+	}
+
+	public int getTotalCards(int index) {
+		return players.get(index).getTotalCards();
+	}
+
+	public int totalPlayers() {
+		return players.size();
+	}
+
+	public int totalDecks() {
+		return decksBoard.size();
 	}
 
 }

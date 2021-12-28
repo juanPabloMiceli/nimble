@@ -53,8 +53,11 @@ dependencies {
 	implementation "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
 	implementation "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"
 
-	implementation group: 'org.springframework', name: 'spring-messaging', version: '5.3.13'
+	//Json
+	implementation group: 'org.json', name: 'json', version: '20211205'
 
+	//Logger
+	implementation group: 'commons-logging', name: 'commons-logging', version: '1.1.1'
 }
 
 jar{
