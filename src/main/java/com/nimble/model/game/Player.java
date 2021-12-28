@@ -40,6 +40,7 @@ public class Player {
 	}
 
 	public void draw() {
+		// TODO: Repensar para discard
 
 		if (onHandsDeck.isEmpty()) {
 			if (hasCardOnHand()) {

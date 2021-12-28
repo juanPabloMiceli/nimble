@@ -6,7 +6,9 @@ import org.springframework.web.socket.WebSocketSession;
 import java.io.IOException;
 import java.util.Objects;
 
-public class User {//TODO: Agregar color?
+public class User {
+
+	// TODO: Agregar color?
 
 	private final String name;
 

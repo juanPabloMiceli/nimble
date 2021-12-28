@@ -7,7 +7,6 @@ import com.nimble.exceptions.lobby.UserAlreadyInLobbyException;
 import com.nimble.exceptions.lobby.UserDoesNotBelongToLobbyException;
 import com.nimble.model.game.Game;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -90,7 +89,7 @@ public class Lobby {
 	public Boolean playFromHand(User user, int playTo) {
 		return game.playOnHandCard(getPlayerNumber(user), playTo);
 	}
-
+	//TODO: playTo renombrar por algo mas declarativo
 	public Boolean playFromDiscard(User user, int playTo) {
 		return game.playDiscardCard(getPlayerNumber(user), playTo);
 	}
