@@ -1,4 +1,4 @@
-package com.nimble.dtos.protocols;
+package com.nimble.dtos.requests;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class ReconnectPayload {
+public class ListPlayersRequest {
 
 	private String method;
 

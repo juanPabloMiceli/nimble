@@ -1,7 +1,7 @@
 package com.nimble.model.methods;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nimble.dtos.protocols.StartPayload;
+import com.nimble.dtos.requests.StartRequest;
 import com.nimble.model.Lobby;
 import com.nimble.model.User;
 import com.nimble.repositories.NimbleRepository;
@@ -13,7 +13,7 @@ public class StartHandler extends MethodHandler {
 
 	private WebSocketSession session;
 
-	private StartPayload payload;
+	private StartRequest payload;
 
 	private NimbleRepository nimbleRepository;
 
@@ -21,8 +21,8 @@ public class StartHandler extends MethodHandler {
 
 	private ObjectMapper mapper;
 
-	public StartHandler(WebSocketSession session, StartPayload payload, NimbleRepository nimbleRepository,
-			ObjectMapper mapper) {
+	public StartHandler(WebSocketSession session, StartRequest payload, NimbleRepository nimbleRepository,
+						ObjectMapper mapper) {
 		this.session = session;
 		this.payload = payload;
 		this.nimbleRepository = nimbleRepository;

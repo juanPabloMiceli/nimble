@@ -1,7 +1,7 @@
 package com.nimble.model.methods;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nimble.dtos.protocols.PlayPayload;
+import com.nimble.dtos.requests.PlayRequest;
 import com.nimble.exceptions.service.InvalidPlayFromException;
 import com.nimble.model.Lobby;
 import com.nimble.model.User;
@@ -16,7 +16,7 @@ public class PlayHandler extends MethodHandler {
 
 	private WebSocketSession session;
 
-	private PlayPayload payload;
+	private PlayRequest payload;
 
 	private NimbleRepository nimbleRepository;
 
@@ -24,8 +24,8 @@ public class PlayHandler extends MethodHandler {
 
 	private ObjectMapper mapper;
 
-	public PlayHandler(WebSocketSession session, PlayPayload payload, NimbleRepository nimbleRepository,
-			ObjectMapper mapper) {
+	public PlayHandler(WebSocketSession session, PlayRequest payload, NimbleRepository nimbleRepository,
+					   ObjectMapper mapper) {
 		this.session = session;
 		this.payload = payload;
 		this.nimbleRepository = nimbleRepository;

@@ -1,7 +1,7 @@
 package com.nimble.model.methods;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nimble.dtos.protocols.QuitPayload;
+import com.nimble.dtos.requests.QuitRequest;
 import com.nimble.model.Lobby;
 import com.nimble.model.User;
 import com.nimble.repositories.NimbleRepository;
@@ -13,7 +13,7 @@ public class QuitHandler extends MethodHandler {
 
 	private WebSocketSession session;
 
-	private QuitPayload payload;
+	private QuitRequest payload;
 
 	private NimbleRepository nimbleRepository;
 
@@ -21,8 +21,8 @@ public class QuitHandler extends MethodHandler {
 
 	private ObjectMapper mapper;
 
-	public QuitHandler(WebSocketSession session, QuitPayload payload, NimbleRepository nimbleRepository,
-			ObjectMapper mapper) {
+	public QuitHandler(WebSocketSession session, QuitRequest payload, NimbleRepository nimbleRepository,
+					   ObjectMapper mapper) {
 		this.session = session;
 		this.payload = payload;
 		this.nimbleRepository = nimbleRepository;

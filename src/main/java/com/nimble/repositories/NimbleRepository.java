@@ -9,8 +9,10 @@ import lombok.Setter;
 import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Repository
 @Getter
@@ -56,6 +58,14 @@ public class NimbleRepository {
 
 	public Boolean containsLobbyKey(String id) {
 		return lobbies.containsKey(id);
+	}
+
+	public List<User> usersAtLobby(String lobbyId) {
+		return getLobby(lobbyId).getUsersIds().stream().map(this::getUser).collect(Collectors.toList());
+	}
+
+	public List<String> namesAtLobby(String lobbyId) {
+		return usersAtLobby(lobbyId).stream().map(User::getName).collect(Collectors.toList());
 	}
 
 }

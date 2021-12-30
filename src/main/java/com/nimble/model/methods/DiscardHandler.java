@@ -1,7 +1,7 @@
 package com.nimble.model.methods;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nimble.dtos.protocols.DiscardPayload;
+import com.nimble.dtos.requests.DiscardRequest;
 import com.nimble.model.Lobby;
 import com.nimble.model.User;
 import com.nimble.repositories.NimbleRepository;
@@ -13,7 +13,7 @@ public class DiscardHandler extends MethodHandler {
 
 	private WebSocketSession session;
 
-	private DiscardPayload payload;
+	private DiscardRequest payload;
 
 	private NimbleRepository nimbleRepository;
 
@@ -21,8 +21,8 @@ public class DiscardHandler extends MethodHandler {
 
 	private ObjectMapper mapper;
 
-	public DiscardHandler(WebSocketSession session, DiscardPayload payload, NimbleRepository nimbleRepository,
-			ObjectMapper mapper) {
+	public DiscardHandler(WebSocketSession session, DiscardRequest payload, NimbleRepository nimbleRepository,
+						  ObjectMapper mapper) {
 		this.session = session;
 		this.payload = payload;
 		this.nimbleRepository = nimbleRepository;

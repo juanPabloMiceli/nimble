@@ -1,4 +1,4 @@
-package com.nimble.dtos.protocols;
+package com.nimble.dtos.requests;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class StartPayload {
+public class DiscardRequest {
 
 	private String method;
 

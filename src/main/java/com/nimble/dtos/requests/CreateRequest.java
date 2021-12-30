@@ -1,4 +1,4 @@
-package com.nimble.dtos.protocols;
+package com.nimble.dtos.requests;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
@@ -8,7 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class CreatePayload {
+public class CreateRequest {
 
 	private String method;
 

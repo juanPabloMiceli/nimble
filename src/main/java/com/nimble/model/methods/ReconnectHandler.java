@@ -2,7 +2,8 @@ package com.nimble.model.methods;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimble.dtos.game.UserDto;
-import com.nimble.dtos.protocols.ReconnectPayload;
+import com.nimble.dtos.requests.ReconnectRequest;
+import com.nimble.dtos.responses.ReconnectResponse;
 import com.nimble.model.User;
 import com.nimble.repositories.NimbleRepository;
 import org.slf4j.Logger;
@@ -15,7 +16,7 @@ public class ReconnectHandler extends MethodHandler {
 
 	private WebSocketSession session;
 
-	private ReconnectPayload payload;
+	private ReconnectRequest payload;
 
 	private NimbleRepository nimbleRepository;
 
@@ -23,8 +24,8 @@ public class ReconnectHandler extends MethodHandler {
 
 	private ObjectMapper mapper;
 
-	public ReconnectHandler(WebSocketSession session, ReconnectPayload payload, NimbleRepository nimbleRepository,
-			ObjectMapper mapper) {
+	public ReconnectHandler(WebSocketSession session, ReconnectRequest payload, NimbleRepository nimbleRepository,
+							ObjectMapper mapper) {
 		this.session = session;
 		this.payload = payload;
 		this.nimbleRepository = nimbleRepository;
@@ -42,7 +43,7 @@ public class ReconnectHandler extends MethodHandler {
 		user.setSession(session);
 		nimbleRepository.putUser(payload.getSessionId(), user);
 		try {
-			user.send(mapper.writeValueAsString(new ReturnReconnectDtoXX("reconnected", new UserDto(user))));
+			user.send(mapper.writeValueAsString(new ReconnectResponse(new UserDto(user))));
 		}
 		catch (IOException e) {
 			e.printStackTrace();

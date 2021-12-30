@@ -1,4 +1,4 @@
-package com.nimble.model.methods;
+package com.nimble.dtos.responses;
 
 import com.nimble.dtos.game.UserDto;
 import lombok.AllArgsConstructor;
@@ -10,12 +10,17 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class ReturnReconnectDtoXX {
+public class ReconnectResponse {
 
-	// TODO: Esto es necesario
+	// TODO: Esto es necesario?
 
 	private String method;
 
 	private UserDto user;
+
+	public ReconnectResponse(UserDto user) {
+		this.method = "reconnected";
+		this.user = user;
+	}
 
 }

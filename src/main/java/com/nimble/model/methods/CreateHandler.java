@@ -1,7 +1,7 @@
 package com.nimble.model.methods;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nimble.dtos.protocols.CreatePayload;
+import com.nimble.dtos.requests.CreateRequest;
 import com.nimble.model.Lobby;
 import com.nimble.model.User;
 import com.nimble.repositories.NimbleRepository;
@@ -13,7 +13,7 @@ public class CreateHandler extends MethodHandler {
 
 	private WebSocketSession session;
 
-	private CreatePayload payload;
+	private CreateRequest payload;
 
 	private NimbleRepository nimbleRepository;
 
@@ -21,8 +21,8 @@ public class CreateHandler extends MethodHandler {
 
 	private ObjectMapper mapper;
 
-	public CreateHandler(WebSocketSession session, CreatePayload payload, NimbleRepository nimbleRepository,
-			ObjectMapper mapper) {
+	public CreateHandler(WebSocketSession session, CreateRequest payload, NimbleRepository nimbleRepository,
+						 ObjectMapper mapper) {
 		// TODO: Seguramente no haga falta pasar tantos argumentos
 		this.session = session;
 		this.payload = payload;
