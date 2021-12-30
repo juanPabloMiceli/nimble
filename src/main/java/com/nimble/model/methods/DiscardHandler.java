@@ -31,14 +31,12 @@ public class DiscardHandler extends MethodHandler {
 
 	@Override
 	public void run() {
-		if (!payload.getLobbyId().equals(nimbleRepository.getLobby().getId())) {
-			logger.error(String.format("%s quiere levantar de un lobby \"%s\" que no existe!", payload.getName(),
-					payload.getLobbyId()));
-			return;
-		}
-		nimbleRepository.getLobby().discard(new User(session, payload.getName()));
-		broadcastState(mapper, nimbleRepository.getLobby());
-		logger.info(String.format("%s levantó una carta", payload.getName()));
+		// TODO: Chequear user/lobby existen, chequear que este iniciado
+		User user = nimbleRepository.getUser(payload.getId());
+		Lobby lobby = nimbleRepository.getLobby(user.getLobbyId());
+		lobby.discard(user);
+		broadcastState(mapper, lobby);
+		logger.info(String.format("%s levantó una carta", user.getName()));
 	}
 
 }

@@ -12,11 +12,8 @@ public class MethodHandlerFactory {
 
 	private static final ObjectMapper mapper = new ObjectMapper();
 
-	private WebSocketSession session;
-
-	private static NimbleRepository nimbleRepository = new NimbleRepository();
-
-	public static MethodHandler create(String payload, WebSocketSession session) throws JsonProcessingException {
+	public static MethodHandler create(NimbleRepository nimbleRepository, String payload, WebSocketSession session)
+			throws JsonProcessingException {
 		JSONObject jsonObject = new JSONObject(payload);
 		String method = (String) jsonObject.get("method");
 
@@ -34,6 +31,9 @@ public class MethodHandlerFactory {
 					mapper);
 		case "play":
 			return new PlayHandler(session, mapper.readValue(payload, PlayPayload.class), nimbleRepository, mapper);
+		case "reconnect":
+			return new ReconnectHandler(session, mapper.readValue(payload, ReconnectPayload.class), nimbleRepository,
+					mapper);
 		default:
 			throw new InvalidMethodException(method);
 		}

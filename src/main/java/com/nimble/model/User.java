@@ -10,9 +10,16 @@ public class User {
 
 	// TODO: Agregar color?
 
-	private final String name;
+	private String name;
 
-	private final WebSocketSession session;
+	private String lobbyId;
+
+	private WebSocketSession session;
+
+	public User(WebSocketSession session) {
+		this.session = session;
+		this.name = "";
+	}
 
 	public User(WebSocketSession session, String name) {
 		this.session = session;
@@ -30,6 +37,26 @@ public class User {
 
 	public String getName() {
 		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public WebSocketSession getSession() {
+		return session;
+	}
+
+	public void setSession(WebSocketSession session) {
+		this.session = session;
+	}
+
+	public String getLobbyId() {
+		return lobbyId;
+	}
+
+	public void setLobbyId(String lobbyId) {
+		this.lobbyId = lobbyId;
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package com.nimble.model.methods;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimble.dtos.protocols.PlayPayload;
 import com.nimble.exceptions.service.InvalidPlayFromException;
+import com.nimble.model.Lobby;
 import com.nimble.model.User;
 import com.nimble.repositories.NimbleRepository;
 import org.slf4j.Logger;
@@ -34,12 +35,9 @@ public class PlayHandler extends MethodHandler {
 	@Override
 	public void run() {
 
-		if (!payload.getLobbyId().equals(nimbleRepository.getLobby().getId())) {
-			// TODO: Esto se va a re ir
-			logger.error(String.format("%s quiere jugar en un lobby \"%s\" que no existe!", payload.getName(),
-					payload.getLobbyId()));
-			return;
-		}
+		// TODO: Chequear user/lobby existen, chequear que este iniciado
+		User user = nimbleRepository.getUser(payload.getId());
+		Lobby lobby = nimbleRepository.getLobby(user.getLobbyId());
 
 		Boolean result;
 
@@ -47,29 +45,26 @@ public class PlayHandler extends MethodHandler {
 		// TODO: Se puede emprolijar esto? Por ahi pasar 2 metodos distintos para hand vs
 		// descarte?
 		case HAND:
-			logger.info(
-					String.format("%s quiere jugar desde la mano al mazo %d", payload.getName(), payload.getPlayTo()));
-			result = nimbleRepository.getLobby().playFromHand(new User(session, payload.getName()),
-					payload.getPlayTo());
+			logger.info(String.format("%s quiere jugar desde la mano al mazo %d", user.getName(), payload.getPlayTo()));
+			result = lobby.playFromHand(user, payload.getPlayTo());
 			break;
 		case DISCARD:
-			logger.info(String.format("%s quiere jugar desde el descarte al mazo %d", payload.getName(),
-					payload.getPlayTo()));
-			result = nimbleRepository.getLobby().playFromDiscard(new User(session, payload.getName()),
-					payload.getPlayTo());
+			logger.info(
+					String.format("%s quiere jugar desde el descarte al mazo %d", user.getName(), payload.getPlayTo()));
+			result = lobby.playFromDiscard(user, payload.getPlayTo());
 			break;
 		default:
 			throw new InvalidPlayFromException(payload.getPlayFrom().name());
 		}
 
 		if (result) {
-			logger.info(String.format("Bien jugado %s!", payload.getName()));
-			broadcastState(mapper, nimbleRepository.getLobby());
+			logger.info(String.format("Bien jugado %s!", user.getName()));
+			broadcastState(mapper, lobby);
 		}
 		else {
-			logger.error(String.format("Sabes jugar %s?\n", payload.getName()));
+			logger.error(String.format("Sabes jugar %s?\n", user.getName()));
 			try {
-				new User(session, payload.getName()).send("La cagaste amigo");
+				user.send("La cagaste amigo");
 			}
 			catch (IOException e) {
 				e.printStackTrace();

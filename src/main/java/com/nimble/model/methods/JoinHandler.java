@@ -2,6 +2,7 @@ package com.nimble.model.methods;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimble.dtos.protocols.JoinPayload;
+import com.nimble.model.Lobby;
 import com.nimble.model.User;
 import com.nimble.repositories.NimbleRepository;
 import org.slf4j.Logger;
@@ -30,13 +31,13 @@ public class JoinHandler extends MethodHandler {
 
 	@Override
 	public void run() {
-		if (!payload.getLobbyId().equals(nimbleRepository.getLobby().getId())) {
-			logger.error(String.format("%s se quiere unir al lobby \"%s\" que no existe!", payload.getName(),
-					payload.getLobbyId()));
-			return;
-		}
-		nimbleRepository.getLobby().add(new User(session, payload.getName()));
-		broadcastState(mapper, nimbleRepository.getLobby());
+		// TODO: Chequear user/lobby existen, chequear que no este iniciado
+		User user = nimbleRepository.getUser(payload.getId());
+		Lobby lobby = nimbleRepository.getLobby(payload.getLobbyId());
+
+		user.setLobbyId(payload.getLobbyId());
+		lobby.add(user);
+		broadcastState(mapper, lobby);
 		logger.info(String.format("%s creó el lobby \"%s\"", payload.getName(), payload.getLobbyId()));
 	}
 

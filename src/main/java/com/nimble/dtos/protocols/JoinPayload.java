@@ -17,6 +17,8 @@ public class JoinPayload {
 	@JsonProperty("lobby_id")
 	private String lobbyId;
 
+	private String id;
+
 	private String name;
 
 }

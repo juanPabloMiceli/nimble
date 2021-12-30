@@ -2,6 +2,8 @@ package com.nimble.model.methods;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimble.dtos.protocols.StartPayload;
+import com.nimble.model.Lobby;
+import com.nimble.model.User;
 import com.nimble.repositories.NimbleRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,14 +31,20 @@ public class StartHandler extends MethodHandler {
 
 	@Override
 	public void run() {
-		if (!payload.getLobbyId().equals(nimbleRepository.getLobby().getId())) {
-			logger.error(String.format("%s quiere iniciar un lobby \"%s\" que no existe!", payload.getName(),
-					payload.getLobbyId()));
-			return;
+
+		if (!nimbleRepository.containsUserKey(payload.getId())) {
+			throw new RuntimeException("Alguien que no existe quiere iniciar!!!");
 		}
-		nimbleRepository.getLobby().start();
-		broadcastState(mapper, nimbleRepository.getLobby());
-		logger.info(String.format("Se inició el lobby \"%s\"", payload.getLobbyId()));
+		User user = nimbleRepository.getUser(payload.getId());
+		if (user.getLobbyId().equals("")) {
+			throw new RuntimeException("Alguien que no tiene lobby lo quiere iniciar!!!");
+		}
+		// TODO: Chequear que no se haya iniciado el lobby antes
+		// TODO: Chequear que el lobby exista
+		Lobby lobby = nimbleRepository.getLobby(user.getLobbyId());
+		lobby.start();
+		broadcastState(mapper, lobby);
+		logger.info(String.format("Se inició el lobby \"%s\"", user.getLobbyId()));
 	}
 
 }

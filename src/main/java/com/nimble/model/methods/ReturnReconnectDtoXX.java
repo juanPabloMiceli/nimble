@@ -1,6 +1,6 @@
-package com.nimble.dtos.protocols;
+package com.nimble.model.methods;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.nimble.dtos.game.UserDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,10 +10,12 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class QuitPayload {
+public class ReturnReconnectDtoXX {
+
+	// TODO: Esto es necesario
 
 	private String method;
 
-	private String id;
+	private UserDto user;
 
 }

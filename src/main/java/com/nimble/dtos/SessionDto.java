@@ -1,6 +1,5 @@
-package com.nimble.dtos.protocols;
+package com.nimble.dtos;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,7 +9,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class QuitPayload {
+public class SessionDto {
 
 	private String method;
 

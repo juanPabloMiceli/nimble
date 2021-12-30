@@ -14,9 +14,6 @@ public class DiscardPayload {
 
 	private String method;
 
-	@JsonProperty("lobby_id")
-	private String lobbyId;
-
-	private String name;
+	private String id;
 
 }

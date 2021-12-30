@@ -2,6 +2,7 @@ package com.nimble.model.methods;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimble.dtos.protocols.QuitPayload;
+import com.nimble.model.Lobby;
 import com.nimble.model.User;
 import com.nimble.repositories.NimbleRepository;
 import org.slf4j.Logger;
@@ -30,14 +31,12 @@ public class QuitHandler extends MethodHandler {
 
 	@Override
 	public void run() {
-		if (!payload.getLobbyId().equals(nimbleRepository.getLobby().getId())) {
-			logger.error(String.format("%s se quiere ir de un lobby \"%s\" que no existe!", payload.getName(),
-					payload.getLobbyId()));
-			return;
-		}
-		nimbleRepository.getLobby().remove(new User(session, payload.getName()));
-		broadcastState(mapper, nimbleRepository.getLobby());
-		logger.info(String.format("%s salió del lobby \"%s\"", payload.getName(), payload.getLobbyId()));
+		// TODO: Chequear user/lobby existen, chequear user pertenece al lobby
+		User user = nimbleRepository.getUser(payload.getId());
+		Lobby lobby = nimbleRepository.getLobby(user.getLobbyId());
+		lobby.remove(user);
+		broadcastState(mapper, lobby);
+		logger.info(String.format("%s salió del lobby \"%s\"", user.getName(), user.getLobbyId()));
 	}
 
 }

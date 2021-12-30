@@ -1,6 +1,10 @@
 package com.nimble.configurations;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nimble.dtos.SessionDto;
+import com.nimble.model.User;
 import com.nimble.model.methods.MethodHandlerFactory;
+import com.nimble.repositories.NimbleRepository;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,14 +21,27 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
 	private final Logger logger = LoggerFactory.getLogger(WebSocketHandler.class);
 
-	@Override
-	public void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException {
-		MethodHandlerFactory.create(message.getPayload(), session).run();
+	private final NimbleRepository nimbleRepository;
+
+	private final ObjectMapper mapper = new ObjectMapper();
+
+	public WebSocketHandler(NimbleRepository nimbleRepository) {
+		this.nimbleRepository = nimbleRepository;
 	}
 
 	@Override
-	public void afterConnectionEstablished(WebSocketSession session) {
+	public void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException {
+		MethodHandlerFactory.create(nimbleRepository, message.getPayload(), session).run();
+	}
+
+	@Override
+	public void afterConnectionEstablished(WebSocketSession session) throws IOException {
 		logger.info(String.format("%s connected", session.getRemoteAddress()));
+		if (nimbleRepository.containsUserKey(session.getId())) {
+			throw new RuntimeException("WHAT, LA SESIONES SE MANTIENEN!!");
+		}
+		nimbleRepository.putUser(session.getId(), new User(session));
+		session.sendMessage(new TextMessage(mapper.writeValueAsString(new SessionDto("session", session.getId()))));
 	}
 
 	@Override

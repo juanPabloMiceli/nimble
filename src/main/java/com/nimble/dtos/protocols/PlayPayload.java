@@ -15,10 +15,7 @@ public class PlayPayload {
 
 	private String method;
 
-	@JsonProperty("lobby_id")
-	private String lobbyId;
-
-	private String name; // TODO: Esto seguro vuela (todos los name)
+	private String id;
 
 	@JsonProperty("play_from")
 	private PlayFrom playFrom;
