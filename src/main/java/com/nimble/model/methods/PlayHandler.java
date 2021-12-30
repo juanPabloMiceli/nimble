@@ -36,7 +36,7 @@ public class PlayHandler extends MethodHandler {
 	public void run() {
 
 		// TODO: Chequear user/lobby existen, chequear que este iniciado
-		User user = nimbleRepository.getUser(payload.getId());
+		User user = nimbleRepository.getUser(payload.getSessionId());
 		Lobby lobby = nimbleRepository.getLobby(user.getLobbyId());
 
 		Boolean result;
@@ -46,12 +46,12 @@ public class PlayHandler extends MethodHandler {
 		// descarte?
 		case HAND:
 			logger.info(String.format("%s quiere jugar desde la mano al mazo %d", user.getName(), payload.getPlayTo()));
-			result = lobby.playFromHand(user, payload.getPlayTo());
+			result = lobby.playFromHand(payload.getSessionId(), payload.getPlayTo());
 			break;
 		case DISCARD:
 			logger.info(
 					String.format("%s quiere jugar desde el descarte al mazo %d", user.getName(), payload.getPlayTo()));
-			result = lobby.playFromDiscard(user, payload.getPlayTo());
+			result = lobby.playFromDiscard(payload.getSessionId(), payload.getPlayTo());
 			break;
 		default:
 			throw new InvalidPlayFromException(payload.getPlayFrom().name());
@@ -59,7 +59,7 @@ public class PlayHandler extends MethodHandler {
 
 		if (result) {
 			logger.info(String.format("Bien jugado %s!", user.getName()));
-			broadcastState(mapper, lobby);
+			broadcastState(mapper, lobby, nimbleRepository);
 		}
 		else {
 			logger.error(String.format("Sabes jugar %s?\n", user.getName()));

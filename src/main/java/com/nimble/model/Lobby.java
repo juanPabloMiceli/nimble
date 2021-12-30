@@ -16,13 +16,13 @@ public class Lobby {
 
 	private Game game;
 
-	private List<User> users = new ArrayList<>();
+	private List<String> usersIds = new ArrayList<>();
 
 	private ObjectMapper mapper;// TODO: sacar porque ya lo tiene el service
 
-	public Lobby(String id, User user) {
+	public Lobby(String id, String userId) {
 		this.id = id;
-		add(user);
+		add(userId);
 		this.mapper = new ObjectMapper();
 
 	}
@@ -34,22 +34,22 @@ public class Lobby {
 
 		id = lobby.id;
 		game = lobby.game;
-		users = lobby.users;
+		usersIds = lobby.usersIds;
 		mapper = lobby.mapper;
 	}
 
-	public void add(User user) {
-		if (users.contains(user)) {
-			throw new UserAlreadyInLobbyException(user.getName(), id);
+	public void add(String userId) {
+		if (usersIds.contains(userId)) {
+			throw new UserAlreadyInLobbyException(userId, id);
 		}
-		users.add(user);
+		usersIds.add(userId);
 	}
 
-	public void remove(User user) {
-		if (!users.contains(user)) {
-			throw new UserDoesNotBelongToLobbyException(user.getName(), id);
+	public void remove(String userId) {
+		if (!usersIds.contains(userId)) {
+			throw new UserDoesNotBelongToLobbyException(userId, id);
 		}
-		users.remove(user);
+		usersIds.remove(userId);
 	}
 
 	public String getId() {
@@ -61,7 +61,7 @@ public class Lobby {
 	}
 
 	private int totalPlayers() {
-		return users.size();
+		return usersIds.size();
 	}
 
 	public Game getGame() {
@@ -72,29 +72,29 @@ public class Lobby {
 		return new Game(game);
 	}
 
-	public List<User> getUsers() {
-		if (users == null) {
+	public List<String> getUsersIds() {
+		if (usersIds == null) {
 			// TODO: Horrible es poco
 			return null;
 		}
-		return new ArrayList<>(users);
+		return new ArrayList<>(usersIds);
 	}
 
-	public void discard(User user) {
-		game.discard(getPlayerNumber(user));
+	public void discard(String userId) {
+		game.discard(getPlayerNumber(userId));
 	}
 
-	public Boolean playFromHand(User user, int playTo) {
-		return game.playOnHandCard(getPlayerNumber(user), playTo);
+	public Boolean playFromHand(String userId, int playTo) {
+		return game.playOnHandCard(getPlayerNumber(userId), playTo);
 	}
 
 	// TODO: playTo renombrar por algo mas declarativo
-	public Boolean playFromDiscard(User user, int playTo) {
-		return game.playDiscardCard(getPlayerNumber(user), playTo);
+	public Boolean playFromDiscard(String userId, int playTo) {
+		return game.playDiscardCard(getPlayerNumber(userId), playTo);
 	}
 
-	private int getPlayerNumber(User user) {
-		return users.indexOf(user);
+	private int getPlayerNumber(String userId) {
+		return usersIds.indexOf(userId);
 	}
 
 }

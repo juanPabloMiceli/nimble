@@ -32,12 +32,12 @@ public class JoinHandler extends MethodHandler {
 	@Override
 	public void run() {
 		// TODO: Chequear user/lobby existen, chequear que no este iniciado
-		User user = nimbleRepository.getUser(payload.getId());
+		User user = nimbleRepository.getUser(payload.getSessionId());
 		Lobby lobby = nimbleRepository.getLobby(payload.getLobbyId());
 
 		user.setLobbyId(payload.getLobbyId());
-		lobby.add(user);
-		broadcastState(mapper, lobby);
+		lobby.add(payload.getSessionId());
+		broadcastState(mapper, lobby, nimbleRepository);
 		logger.info(String.format("%s creó el lobby \"%s\"", payload.getName(), payload.getLobbyId()));
 	}
 

@@ -14,6 +14,7 @@ public class QuitPayload {
 
 	private String method;
 
-	private String id;
+	@JsonProperty("session_id")
+	private String sessionId;
 
 }

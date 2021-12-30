@@ -1,5 +1,6 @@
 package com.nimble.dtos;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,6 +14,12 @@ public class SessionDto {
 
 	private String method;
 
-	private String id;
+	@JsonProperty("session_id")
+	private String sessionId;
+
+	public SessionDto(String sessionId) {
+		this.method = "session_share";
+		this.sessionId = sessionId;
+	}
 
 }

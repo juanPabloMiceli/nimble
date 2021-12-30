@@ -35,15 +35,15 @@ public class CreateHandler extends MethodHandler {
 		if (payload.getLobbyId().equals("")) {
 			throw new RuntimeException("Invalid lobbyId!!!");
 		}
-		if (!nimbleRepository.containsUserKey(payload.getId())) {
+		if (!nimbleRepository.containsUserKey(payload.getSessionId())) {
 			logger.error("Alguien que no existe quiere crear partida!");
 			return;
 		}
-		User user = nimbleRepository.getUser(session.getId());
+		User user = nimbleRepository.getUser(payload.getSessionId());
 		user.setName(payload.getName());
 		user.setLobbyId(payload.getLobbyId());
-		nimbleRepository.putLobby(payload.getLobbyId(), new Lobby(payload.getLobbyId(), user));
-		broadcastState(mapper, nimbleRepository.getLobby(payload.getLobbyId()));
+		nimbleRepository.putLobby(payload.getLobbyId(), new Lobby(payload.getLobbyId(), payload.getSessionId()));
+		broadcastState(mapper, nimbleRepository.getLobby(payload.getLobbyId()), nimbleRepository);
 
 		logger.info(String.format("%s creó el lobby \"%s\"", payload.getName(), payload.getLobbyId()));
 	}

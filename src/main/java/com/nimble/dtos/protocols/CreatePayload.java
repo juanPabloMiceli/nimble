@@ -15,7 +15,8 @@ public class CreatePayload {
 	@JsonProperty("lobby_id")
 	private String lobbyId;// TODO: Autogenerar y devolver al usuario
 
-	private String id;
+	@JsonProperty("session_id")
+	private String sessionId;
 
 	private String name;
 

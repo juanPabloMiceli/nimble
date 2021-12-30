@@ -3,8 +3,7 @@ package com.nimble.dtos;
 import com.nimble.dtos.game.GameDto;
 import com.nimble.dtos.game.UserDto;
 import com.nimble.model.Lobby;
-import com.nimble.model.game.Game;
-import com.nimble.model.User;
+import com.nimble.repositories.NimbleRepository;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,12 +24,12 @@ public class LobbyDto {
 
 	private GameDto game;
 
-	public LobbyDto(Lobby lobby) {
+	public LobbyDto(Lobby lobby, NimbleRepository nimbleRepository) {
 		if (lobby == null) {
 			return;
 		}
 		users = new ArrayList<>();
-		lobby.getUsers().forEach(user -> this.users.add(new UserDto(user)));
+		lobby.getUsersIds().forEach(userId -> this.users.add(new UserDto(nimbleRepository.getUser(userId))));
 		this.id = lobby.getId();
 		this.game = new GameDto(lobby.getGame());
 

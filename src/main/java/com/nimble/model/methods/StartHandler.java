@@ -32,10 +32,10 @@ public class StartHandler extends MethodHandler {
 	@Override
 	public void run() {
 
-		if (!nimbleRepository.containsUserKey(payload.getId())) {
+		if (!nimbleRepository.containsUserKey(payload.getSessionId())) {
 			throw new RuntimeException("Alguien que no existe quiere iniciar!!!");
 		}
-		User user = nimbleRepository.getUser(payload.getId());
+		User user = nimbleRepository.getUser(payload.getSessionId());
 		if (user.getLobbyId().equals("")) {
 			throw new RuntimeException("Alguien que no tiene lobby lo quiere iniciar!!!");
 		}
@@ -43,7 +43,7 @@ public class StartHandler extends MethodHandler {
 		// TODO: Chequear que el lobby exista
 		Lobby lobby = nimbleRepository.getLobby(user.getLobbyId());
 		lobby.start();
-		broadcastState(mapper, lobby);
+		broadcastState(mapper, lobby, nimbleRepository);
 		logger.info(String.format("Se inició el lobby \"%s\"", user.getLobbyId()));
 	}
 

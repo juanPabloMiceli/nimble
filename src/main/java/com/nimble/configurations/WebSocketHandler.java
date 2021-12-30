@@ -41,7 +41,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 			throw new RuntimeException("WHAT, LA SESIONES SE MANTIENEN!!");
 		}
 		nimbleRepository.putUser(session.getId(), new User(session));
-		session.sendMessage(new TextMessage(mapper.writeValueAsString(new SessionDto("session", session.getId()))));
+		session.sendMessage(new TextMessage(mapper.writeValueAsString(new SessionDto(session.getId()))));
 	}
 
 	@Override

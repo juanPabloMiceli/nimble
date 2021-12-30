@@ -33,14 +33,14 @@ public class ReconnectHandler extends MethodHandler {
 
 	@Override
 	public void run() {
-		if (!nimbleRepository.containsUserKey(payload.getId())) {
+		if (!nimbleRepository.containsUserKey(payload.getSessionId())) {
 			logger.error("Un boludo quiere recuperar algo que no es suyo...");
 			return;
 		}
-		User user = nimbleRepository.getUser(payload.getId());
+		User user = nimbleRepository.getUser(payload.getSessionId());
 		logger.info(String.format("Bienvenido de nuevo %s", user.getName()));
 		user.setSession(session);
-		nimbleRepository.putUser(payload.getId(), user);
+		nimbleRepository.putUser(payload.getSessionId(), user);
 		try {
 			user.send(mapper.writeValueAsString(new ReturnReconnectDtoXX("reconnected", new UserDto(user))));
 		}

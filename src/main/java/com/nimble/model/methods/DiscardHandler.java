@@ -32,10 +32,10 @@ public class DiscardHandler extends MethodHandler {
 	@Override
 	public void run() {
 		// TODO: Chequear user/lobby existen, chequear que este iniciado
-		User user = nimbleRepository.getUser(payload.getId());
+		User user = nimbleRepository.getUser(payload.getSessionId());
 		Lobby lobby = nimbleRepository.getLobby(user.getLobbyId());
-		lobby.discard(user);
-		broadcastState(mapper, lobby);
+		lobby.discard(payload.getSessionId());
+		broadcastState(mapper, lobby, nimbleRepository);
 		logger.info(String.format("%s levantó una carta", user.getName()));
 	}
 

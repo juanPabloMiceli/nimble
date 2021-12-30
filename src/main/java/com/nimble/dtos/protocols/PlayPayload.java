@@ -15,7 +15,8 @@ public class PlayPayload {
 
 	private String method;
 
-	private String id;
+	@JsonProperty("session_id")
+	private String sessionId;
 
 	@JsonProperty("play_from")
 	private PlayFrom playFrom;

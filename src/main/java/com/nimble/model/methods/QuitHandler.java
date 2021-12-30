@@ -32,10 +32,10 @@ public class QuitHandler extends MethodHandler {
 	@Override
 	public void run() {
 		// TODO: Chequear user/lobby existen, chequear user pertenece al lobby
-		User user = nimbleRepository.getUser(payload.getId());
+		User user = nimbleRepository.getUser(payload.getSessionId());
 		Lobby lobby = nimbleRepository.getLobby(user.getLobbyId());
-		lobby.remove(user);
-		broadcastState(mapper, lobby);
+		lobby.remove(payload.getSessionId());
+		broadcastState(mapper, lobby, nimbleRepository);
 		logger.info(String.format("%s salió del lobby \"%s\"", user.getName(), user.getLobbyId()));
 	}
 
