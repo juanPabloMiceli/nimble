@@ -45,6 +45,9 @@ public class Player {
 
 	private Card draw() {
 		if (onHandsDeck.isEmpty()) {
+			if (discardDeck.isEmpty()) {
+				return null;
+			}
 			// Como no tengo de donde agarrar paso el mazo del descarte a la mano
 			// invirtiendo su orden:
 			while (!discardDeck.isEmpty()) {
@@ -63,7 +66,7 @@ public class Player {
 		}
 
 		deckBoard.add(this.handCard);
-		draw();
+		handCard = draw();
 		return true;
 	}
 
