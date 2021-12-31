@@ -12,9 +12,6 @@ public class CreateRequest {
 
 	private String method;
 
-	@JsonProperty("lobby_id")
-	private String lobbyId;// TODO: Autogenerar y devolver al usuario
-
 	@JsonProperty("session_id")
 	private String sessionId;
 

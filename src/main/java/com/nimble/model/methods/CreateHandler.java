@@ -2,12 +2,17 @@ package com.nimble.model.methods;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimble.dtos.requests.CreateRequest;
+import com.nimble.dtos.responses.CreateResponse;
 import com.nimble.model.Lobby;
 import com.nimble.model.User;
 import com.nimble.repositories.NimbleRepository;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.socket.WebSocketSession;
+
+import java.io.IOException;
+import java.util.UUID;
 
 public class CreateHandler extends MethodHandler {
 
@@ -32,20 +37,26 @@ public class CreateHandler extends MethodHandler {
 
 	@Override
 	public void run() {
-		if (payload.getLobbyId().equals("")) {
-			throw new RuntimeException("Invalid lobbyId!!!");
-		}
+		String lobbyId = "";
+		do{
+			lobbyId = RandomStringUtils.random(2, true, false);
+			//TODO: Esto esta feo y hay que hacer un generador de lobbys como clase separada
+			//entre otras cosas deberia decir si no hay mas lobbies disponibles
+		}while(nimbleRepository.containsLobbyKey(lobbyId));
+
 		if (!nimbleRepository.containsUserKey(payload.getSessionId())) {
 			logger.error("Alguien que no existe quiere crear partida!");
 			return;
 		}
 		User user = nimbleRepository.getUser(payload.getSessionId());
 		user.setName(payload.getName());
-		user.setLobbyId(payload.getLobbyId());
-		nimbleRepository.putLobby(payload.getLobbyId(), new Lobby(payload.getLobbyId(), payload.getSessionId()));
-		broadcastState(mapper, nimbleRepository.getLobby(payload.getLobbyId()), nimbleRepository);
-
-		logger.info(String.format("%s creó el lobby \"%s\"", payload.getName(), payload.getLobbyId()));
+		user.setLobbyId(lobbyId);
+		nimbleRepository.putLobby(lobbyId, new Lobby(lobbyId, payload.getSessionId()));
+		try {
+			user.send(mapper.writeValueAsString(new CreateResponse(lobbyId)));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		logger.info(String.format("%s creó el lobby \"%s\"", payload.getName(), lobbyId));
 	}
-
 }
