@@ -1,6 +1,6 @@
 package com.nimble.model.methods;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nimble.configurations.Messenger;
 import com.nimble.dtos.game.UserDto;
 import com.nimble.dtos.requests.ReconnectRequest;
 import com.nimble.dtos.responses.ReconnectResponse;
@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.socket.WebSocketSession;
 
-import java.io.IOException;
 
 public class ReconnectHandler extends MethodHandler {
 
@@ -22,14 +21,14 @@ public class ReconnectHandler extends MethodHandler {
 
 	private final Logger logger = LoggerFactory.getLogger(PlayHandler.class);
 
-	private ObjectMapper mapper;
+	private Messenger messenger;
 
 	public ReconnectHandler(WebSocketSession session, ReconnectRequest payload, NimbleRepository nimbleRepository,
-			ObjectMapper mapper) {
+			Messenger messenger) {
 		this.session = session;
 		this.payload = payload;
 		this.nimbleRepository = nimbleRepository;
-		this.mapper = mapper;
+		this.messenger = messenger;
 	}
 
 	@Override
@@ -42,12 +41,7 @@ public class ReconnectHandler extends MethodHandler {
 		logger.info(String.format("Bienvenido de nuevo %s", user.getName()));
 		user.setSession(session);
 		nimbleRepository.putUser(payload.getSessionId(), user);
-		try {
-			user.send(mapper.writeValueAsString(new ReconnectResponse(new UserDto(user))));
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
+		messenger.send(user.getId(), new ReconnectResponse(new UserDto(user)));
 	}
 
 }

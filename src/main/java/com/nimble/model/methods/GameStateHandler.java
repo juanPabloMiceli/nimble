@@ -1,21 +1,21 @@
 package com.nimble.model.methods;
 
 import com.nimble.configurations.Messenger;
-import com.nimble.dtos.requests.LobbyInfoRequest;
+import com.nimble.dtos.game.GameDto;
+import com.nimble.dtos.requests.GameStateRequest;
+import com.nimble.dtos.responses.GameStateResponse;
 import com.nimble.model.Lobby;
 import com.nimble.model.User;
-import com.nimble.dtos.responses.LobbyInfoResponse;
 import com.nimble.repositories.NimbleRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.socket.WebSocketSession;
 
-
-public class LobbyInfoHandler extends MethodHandler {
+public class GameStateHandler extends MethodHandler {
 
 	private WebSocketSession session;
 
-	private LobbyInfoRequest payload;
+	private GameStateRequest payload;
 
 	private NimbleRepository nimbleRepository;
 
@@ -23,7 +23,7 @@ public class LobbyInfoHandler extends MethodHandler {
 
 	private Messenger messenger;
 
-	public LobbyInfoHandler(WebSocketSession session, LobbyInfoRequest payload, NimbleRepository nimbleRepository,
+	public GameStateHandler(WebSocketSession session, GameStateRequest payload, NimbleRepository nimbleRepository,
 			Messenger messenger) {
 		this.session = session;
 		this.payload = payload;
@@ -36,11 +36,10 @@ public class LobbyInfoHandler extends MethodHandler {
 		User user = nimbleRepository.getUser(payload.getSessionId());
 		Lobby lobby = nimbleRepository.getLobby(user.getLobbyId());
 
-		messenger.send(user.getId(),
-				new LobbyInfoResponse(nimbleRepository.usersDtoAtLobby(lobby.getId()), lobby.getId()));
+		messenger.send(user.getId(), new GameStateResponse(0, nimbleRepository.usersDtoAtLobby(lobby.getId()),
+				new GameDto(lobby.getGame())));
 
 		logger.info(String.format("Listing players for %s", user.getName()));
-
 	}
 
 }

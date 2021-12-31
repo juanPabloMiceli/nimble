@@ -19,7 +19,7 @@ public class ReconnectResponse {
 	private UserDto user;
 
 	public ReconnectResponse(UserDto user) {
-		this.method = "reconnected";
+		this.method = "reconnect";
 		this.user = user;
 	}
 

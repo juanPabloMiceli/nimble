@@ -1,7 +1,9 @@
 package com.nimble.model.methods;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nimble.configurations.Messenger;
+import com.nimble.dtos.game.GameDto;
 import com.nimble.dtos.requests.DiscardRequest;
+import com.nimble.dtos.responses.GameStateResponse;
 import com.nimble.model.Lobby;
 import com.nimble.model.User;
 import com.nimble.repositories.NimbleRepository;
@@ -19,14 +21,14 @@ public class DiscardHandler extends MethodHandler {
 
 	private final Logger logger = LoggerFactory.getLogger(DiscardHandler.class);
 
-	private ObjectMapper mapper;
+	private Messenger messenger;
 
 	public DiscardHandler(WebSocketSession session, DiscardRequest payload, NimbleRepository nimbleRepository,
-			ObjectMapper mapper) {
+			Messenger messenger) {
 		this.session = session;
 		this.payload = payload;
 		this.nimbleRepository = nimbleRepository;
-		this.mapper = mapper;
+		this.messenger = messenger;
 	}
 
 	@Override
@@ -35,7 +37,8 @@ public class DiscardHandler extends MethodHandler {
 		User user = nimbleRepository.getUser(payload.getSessionId());
 		Lobby lobby = nimbleRepository.getLobby(user.getLobbyId());
 		lobby.discard(payload.getSessionId());
-		broadcastState(mapper, lobby, nimbleRepository);
+		messenger.broadcastToLobbyOf(user.getId(), new GameStateResponse(0,
+				nimbleRepository.usersDtoAtLobby(lobby.getId()), new GameDto(lobby.getGame())));
 		logger.info(String.format("%s levantó una carta", user.getName()));
 	}
 

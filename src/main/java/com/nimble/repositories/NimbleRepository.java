@@ -1,5 +1,6 @@
 package com.nimble.repositories;
 
+import com.nimble.dtos.game.UserDto;
 import com.nimble.model.Lobby;
 import com.nimble.model.User;
 import lombok.AllArgsConstructor;
@@ -7,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.socket.WebSocketSession;
 
 import java.util.HashMap;
 import java.util.List;
@@ -27,44 +29,72 @@ public class NimbleRepository {
 
 	private Map<String, Lobby> lobbies = new HashMap<>();
 
-	public void putUser(String id, User user) {
-		users.put(id, user);
+	public void putUser(String userId, User user) {
+		users.put(userId, user);
 	}
 
-	public User getUser(String id) {
-		return users.get(id);
+	public User getUser(String userId) {
+		return users.get(userId);
 	}
 
-	public User removeUser(String id) {
-		return users.remove(id);
+	public User removeUser(String userId) {
+		return users.remove(userId);
 	}
 
-	public Boolean containsUserKey(String id) {
-		return users.containsKey(id);
+	public Boolean containsUserKey(String userId) {
+		return users.containsKey(userId);
 	}
 
-	public void putLobby(String id, Lobby user) {
-		lobbies.put(id, user);
+	public void putLobby(String lobbyId, Lobby lobby) {
+		lobbies.put(lobbyId, lobby);
 	}
 
-	public Lobby getLobby(String id) {
-		return lobbies.get(id);
+	public Lobby getLobby(String lobbyId) {
+		return lobbies.get(lobbyId);
 	}
 
-	public Lobby removeLobby(String id) {
-		return lobbies.remove(id);
+	public Lobby removeLobby(String lobbyId) {
+		return lobbies.remove(lobbyId);
 	}
 
-	public Boolean containsLobbyKey(String id) {
-		return lobbies.containsKey(id);
+	public Boolean containsLobbyKey(String lobbyId) {
+		return lobbies.containsKey(lobbyId);
 	}
 
 	public List<User> usersAtLobby(String lobbyId) {
 		return getLobby(lobbyId).getUsersIds().stream().map(this::getUser).collect(Collectors.toList());
 	}
 
+	public List<User> usersAtLobbyOf(String usersId) {
+		return lobbyOf(usersId).getUsersIds().stream().map(this::getUser).collect(Collectors.toList());
+	}
+
 	public List<String> namesAtLobby(String lobbyId) {
 		return usersAtLobby(lobbyId).stream().map(User::getName).collect(Collectors.toList());
+	}
+
+	public WebSocketSession getSession(String userId) {
+		return getUser(userId).getSession();
+	}
+
+	public Lobby lobbyOf(String userId) {
+		return getLobby(getUser(userId).getLobbyId());
+	}
+
+	public List<WebSocketSession> sessionsAtLobby(String lobbyId) {
+		return usersAtLobby(lobbyId).stream().map(User::getSession).collect(Collectors.toList());
+	}
+
+	public List<WebSocketSession> sessionsAtUserLobby(String userId) {
+		return sessionsAtLobby(lobbyOf(userId).getId());
+	}
+
+	public List<UserDto> usersDtoAtLobby(String lobbyId) {
+		return usersAtLobby(lobbyId).stream().map(UserDto::new).collect(Collectors.toList());
+	}
+
+	public List<UserDto> usersDtoAtLobbyOf(String userId) {
+		return usersAtLobbyOf(userId).stream().map(UserDto::new).collect(Collectors.toList());
 	}
 
 }

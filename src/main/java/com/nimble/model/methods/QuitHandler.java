@@ -1,7 +1,8 @@
 package com.nimble.model.methods;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nimble.configurations.Messenger;
 import com.nimble.dtos.requests.QuitRequest;
+import com.nimble.dtos.responses.LobbyInfoResponse;
 import com.nimble.model.Lobby;
 import com.nimble.model.User;
 import com.nimble.repositories.NimbleRepository;
@@ -19,14 +20,14 @@ public class QuitHandler extends MethodHandler {
 
 	private final Logger logger = LoggerFactory.getLogger(QuitHandler.class);
 
-	private ObjectMapper mapper;
+	private Messenger messenger;
 
 	public QuitHandler(WebSocketSession session, QuitRequest payload, NimbleRepository nimbleRepository,
-			ObjectMapper mapper) {
+			Messenger messenger) {
 		this.session = session;
 		this.payload = payload;
 		this.nimbleRepository = nimbleRepository;
-		this.mapper = mapper;
+		this.messenger = messenger;
 	}
 
 	@Override
@@ -35,7 +36,8 @@ public class QuitHandler extends MethodHandler {
 		User user = nimbleRepository.getUser(payload.getSessionId());
 		Lobby lobby = nimbleRepository.getLobby(user.getLobbyId());
 		lobby.remove(payload.getSessionId());
-		broadcastState(mapper, lobby, nimbleRepository);
+		messenger.broadcastToLobbyOf(user.getId(),
+				new LobbyInfoResponse(nimbleRepository.usersDtoAtLobby(lobby.getId()), lobby.getId()));
 		logger.info(String.format("%s salió del lobby \"%s\"", user.getName(), user.getLobbyId()));
 	}
 

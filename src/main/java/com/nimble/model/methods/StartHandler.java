@@ -1,7 +1,9 @@
 package com.nimble.model.methods;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nimble.configurations.Messenger;
+import com.nimble.dtos.LobbyDto;
 import com.nimble.dtos.requests.StartRequest;
+import com.nimble.dtos.responses.status.SuccessfulResponse;
 import com.nimble.model.Lobby;
 import com.nimble.model.User;
 import com.nimble.repositories.NimbleRepository;
@@ -19,14 +21,14 @@ public class StartHandler extends MethodHandler {
 
 	private final Logger logger = LoggerFactory.getLogger(StartHandler.class);
 
-	private ObjectMapper mapper;
+	private Messenger messenger;
 
 	public StartHandler(WebSocketSession session, StartRequest payload, NimbleRepository nimbleRepository,
-			ObjectMapper mapper) {
+			Messenger messenger) {
 		this.session = session;
 		this.payload = payload;
 		this.nimbleRepository = nimbleRepository;
-		this.mapper = mapper;
+		this.messenger = messenger;
 	}
 
 	@Override
@@ -43,7 +45,8 @@ public class StartHandler extends MethodHandler {
 		// TODO: Chequear que el lobby exista
 		Lobby lobby = nimbleRepository.getLobby(user.getLobbyId());
 		lobby.start();
-		broadcastState(mapper, lobby, nimbleRepository);
+		messenger.broadcastToLobbyOf(user.getId(), new SuccessfulResponse());
+		messenger.send(user.getId(), new LobbyDto(lobby, nimbleRepository));
 		logger.info(String.format("Se inició el lobby \"%s\"", user.getLobbyId()));
 	}
 

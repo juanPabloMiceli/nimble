@@ -1,7 +1,10 @@
 package com.nimble.model.methods;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nimble.configurations.Messenger;
+import com.nimble.dtos.game.GameDto;
 import com.nimble.dtos.requests.PlayRequest;
+import com.nimble.dtos.responses.GameStateResponse;
+import com.nimble.dtos.responses.status.InvalidPlayResponse;
 import com.nimble.exceptions.service.InvalidPlayFromException;
 import com.nimble.model.Lobby;
 import com.nimble.model.User;
@@ -10,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.socket.WebSocketSession;
 
-import java.io.IOException;
 
 public class PlayHandler extends MethodHandler {
 
@@ -22,14 +24,14 @@ public class PlayHandler extends MethodHandler {
 
 	private final Logger logger = LoggerFactory.getLogger(PlayHandler.class);
 
-	private ObjectMapper mapper;
+	private Messenger messenger;
 
 	public PlayHandler(WebSocketSession session, PlayRequest payload, NimbleRepository nimbleRepository,
-			ObjectMapper mapper) {
+			Messenger messenger) {
 		this.session = session;
 		this.payload = payload;
 		this.nimbleRepository = nimbleRepository;
-		this.mapper = mapper;
+		this.messenger = messenger;
 	}
 
 	@Override
@@ -59,16 +61,12 @@ public class PlayHandler extends MethodHandler {
 
 		if (result) {
 			logger.info(String.format("Bien jugado %s!", user.getName()));
-			broadcastState(mapper, lobby, nimbleRepository);
+			messenger.broadcastToLobbyOf(user.getId(), new GameStateResponse(0,
+					nimbleRepository.usersDtoAtLobby(lobby.getId()), new GameDto(lobby.getGame())));
 		}
 		else {
 			logger.error(String.format("Sabes jugar %s?\n", user.getName()));
-			try {
-				user.send("La cagaste amigo");
-			}
-			catch (IOException e) {
-				e.printStackTrace();
-			}
+			messenger.send(user.getId(), new InvalidPlayResponse(user.getName()));
 		}
 	}
 

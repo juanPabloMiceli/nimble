@@ -1,6 +1,7 @@
 package com.nimble.dtos.responses;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.nimble.dtos.game.GameDto;
 import com.nimble.dtos.game.UserDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,22 +14,22 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-public class LobbyInfoResponse {
+public class GameStateResponse {
 
 	private String method;
 
 	@JsonProperty("player_number")
-	private int playerNumber; //TODO: Dejar de hardcodear
-
-	@JsonProperty("lobby_id")
-	private String lobbyId;
+	private int playerNumber;
 
 	private List<UserDto> users;
 
-	public LobbyInfoResponse(List<UserDto> users, String lobbyId) {
+	private GameDto game;
+
+	public GameStateResponse(int playerNumber, List<UserDto> users, GameDto game) {
+		this.method = "game_state";
+		this.playerNumber = playerNumber;
 		this.users = users;
-		this.lobbyId = lobbyId;
-		this.method = "lobby_info";
+		this.game = game;
 	}
 
 }
