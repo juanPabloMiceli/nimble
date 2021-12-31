@@ -2,7 +2,7 @@ package com.nimble.model.methods;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimble.dtos.requests.CreateRequest;
-import com.nimble.dtos.responses.CreateResponse;
+import com.nimble.dtos.responses.StatusResponse;
 import com.nimble.model.Lobby;
 import com.nimble.model.User;
 import com.nimble.repositories.NimbleRepository;
@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
-import java.util.UUID;
 
 public class CreateHandler extends MethodHandler {
 
@@ -53,7 +52,7 @@ public class CreateHandler extends MethodHandler {
 		user.setLobbyId(lobbyId);
 		nimbleRepository.putLobby(lobbyId, new Lobby(lobbyId, payload.getSessionId()));
 		try {
-			user.send(mapper.writeValueAsString(new CreateResponse(lobbyId)));
+			user.send(mapper.writeValueAsString(StatusResponse.SuccessfulResponse("operation_status")));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -2,6 +2,7 @@ package com.nimble.model.methods;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimble.dtos.requests.JoinRequest;
+import com.nimble.dtos.responses.StatusResponse;
 import com.nimble.model.Lobby;
 import com.nimble.model.User;
 import com.nimble.dtos.responses.ListPlayersResponse;
@@ -41,15 +42,20 @@ public class JoinHandler extends MethodHandler {
 		user.setLobbyId(payload.getLobbyId());
 		user.setName(payload.getName());
 		lobby.add(payload.getSessionId());
-		nimbleRepository.usersAtLobby(lobby.getId()).forEach(_user -> {
-			try {
-				_user.send(mapper
-						.writeValueAsString(new ListPlayersResponse(nimbleRepository.namesAtLobby(lobby.getId()))));
-			}
-			catch (IOException e) {
-				e.printStackTrace();
-			}
-		});
+
+		try {
+			user.send(mapper.writeValueAsString(StatusResponse.SuccessfulResponse("operation_status")));
+			nimbleRepository.usersAtLobby(lobby.getId()).forEach(_user -> {
+				try {//TODO: revisar por que hay 2 try catch.
+					_user.send(mapper
+							.writeValueAsString(new ListPlayersResponse(nimbleRepository.namesAtLobby(lobby.getId()))));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			});
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		logger.info(String.format("%s creó el lobby \"%s\"", payload.getName(), payload.getLobbyId()));
 	}
 
