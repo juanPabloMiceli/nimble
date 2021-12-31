@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.socket.WebSocketSession;
 
-
 public class LobbyInfoHandler extends MethodHandler {
 
 	private WebSocketSession session;

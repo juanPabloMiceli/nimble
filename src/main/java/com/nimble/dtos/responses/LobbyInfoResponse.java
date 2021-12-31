@@ -18,7 +18,7 @@ public class LobbyInfoResponse {
 	private String method;
 
 	@JsonProperty("player_number")
-	private int playerNumber; //TODO: Dejar de hardcodear
+	private int playerNumber; // TODO: Dejar de hardcodear
 
 	@JsonProperty("lobby_id")
 	private String lobbyId;
