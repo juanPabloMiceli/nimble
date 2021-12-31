@@ -2,13 +2,16 @@ package com.nimble.model.methods;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimble.dtos.requests.CreateRequest;
-import com.nimble.dtos.responses.StatusResponse;
+import com.nimble.dtos.responses.errors.StatusResponse;
+import com.nimble.dtos.responses.errors.SuccessfulResponse;
+import com.nimble.dtos.responses.errors.UnexpectedErrorResponse;
 import com.nimble.model.Lobby;
 import com.nimble.model.User;
 import com.nimble.repositories.NimbleRepository;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
@@ -48,6 +51,12 @@ public class CreateHandler extends MethodHandler {
 
 		if (!nimbleRepository.containsUserKey(payload.getSessionId())) {
 			logger.error("Alguien que no existe quiere crear partida!");
+			try {
+				session.sendMessage(new TextMessage(mapper.writeValueAsString(new UnexpectedErrorResponse())));
+			}
+			catch (IOException e) {
+				e.printStackTrace();
+			}
 			return;
 		}
 		User user = nimbleRepository.getUser(payload.getSessionId());
@@ -55,7 +64,7 @@ public class CreateHandler extends MethodHandler {
 		user.setLobbyId(lobbyId);
 		nimbleRepository.putLobby(lobbyId, new Lobby(lobbyId, payload.getSessionId()));
 		try {
-			user.send(mapper.writeValueAsString(StatusResponse.SuccessfulResponse("operation_status")));
+			user.send(mapper.writeValueAsString(new SuccessfulResponse()));
 		}
 		catch (IOException e) {
 			e.printStackTrace();
