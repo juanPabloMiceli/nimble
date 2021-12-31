@@ -1,6 +1,5 @@
 package com.nimble.model;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimble.exceptions.lobby.UserAlreadyInLobbyException;
 import com.nimble.exceptions.lobby.UserDoesNotBelongToLobbyException;
 import com.nimble.model.game.Game;
@@ -18,12 +17,11 @@ public class Lobby {
 
 	private List<String> usersIds = new ArrayList<>();
 
-	private ObjectMapper mapper;// TODO: sacar porque ya lo tiene el service
+
 
 	public Lobby(String id, String userId) {
 		this.id = id;
 		add(userId);
-		this.mapper = new ObjectMapper();
 
 	}
 
@@ -35,7 +33,6 @@ public class Lobby {
 		id = lobby.id;
 		game = lobby.game;
 		usersIds = lobby.usersIds;
-		mapper = lobby.mapper;
 	}
 
 	public void add(String userId) {
