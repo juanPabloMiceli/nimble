@@ -22,7 +22,7 @@ public class StartHandler extends MethodHandler {
 	private ObjectMapper mapper;
 
 	public StartHandler(WebSocketSession session, StartRequest payload, NimbleRepository nimbleRepository,
-						ObjectMapper mapper) {
+			ObjectMapper mapper) {
 		this.session = session;
 		this.payload = payload;
 		this.nimbleRepository = nimbleRepository;

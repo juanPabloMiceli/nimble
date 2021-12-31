@@ -25,7 +25,7 @@ public class PlayHandler extends MethodHandler {
 	private ObjectMapper mapper;
 
 	public PlayHandler(WebSocketSession session, PlayRequest payload, NimbleRepository nimbleRepository,
-					   ObjectMapper mapper) {
+			ObjectMapper mapper) {
 		this.session = session;
 		this.payload = payload;
 		this.nimbleRepository = nimbleRepository;

@@ -22,7 +22,7 @@ public class QuitHandler extends MethodHandler {
 	private ObjectMapper mapper;
 
 	public QuitHandler(WebSocketSession session, QuitRequest payload, NimbleRepository nimbleRepository,
-					   ObjectMapper mapper) {
+			ObjectMapper mapper) {
 		this.session = session;
 		this.payload = payload;
 		this.nimbleRepository = nimbleRepository;

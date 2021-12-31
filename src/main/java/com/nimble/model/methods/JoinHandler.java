@@ -26,7 +26,7 @@ public class JoinHandler extends MethodHandler {
 	private ObjectMapper mapper;
 
 	public JoinHandler(WebSocketSession session, JoinRequest payload, NimbleRepository nimbleRepository,
-					   ObjectMapper mapper) {
+			ObjectMapper mapper) {
 		this.session = session;
 		this.payload = payload;
 		this.nimbleRepository = nimbleRepository;
@@ -46,14 +46,16 @@ public class JoinHandler extends MethodHandler {
 		try {
 			user.send(mapper.writeValueAsString(StatusResponse.SuccessfulResponse("operation_status")));
 			nimbleRepository.usersAtLobby(lobby.getId()).forEach(_user -> {
-				try {//TODO: revisar por que hay 2 try catch.
+				try {// TODO: revisar por que hay 2 try catch.
 					_user.send(mapper
 							.writeValueAsString(new ListPlayersResponse(nimbleRepository.namesAtLobby(lobby.getId()))));
-				} catch (IOException e) {
+				}
+				catch (IOException e) {
 					e.printStackTrace();
 				}
 			});
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			e.printStackTrace();
 		}
 		logger.info(String.format("%s creó el lobby \"%s\"", payload.getName(), payload.getLobbyId()));

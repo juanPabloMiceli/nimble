@@ -22,7 +22,7 @@ public class DiscardHandler extends MethodHandler {
 	private ObjectMapper mapper;
 
 	public DiscardHandler(WebSocketSession session, DiscardRequest payload, NimbleRepository nimbleRepository,
-						  ObjectMapper mapper) {
+			ObjectMapper mapper) {
 		this.session = session;
 		this.payload = payload;
 		this.nimbleRepository = nimbleRepository;

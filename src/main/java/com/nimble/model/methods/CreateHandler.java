@@ -26,7 +26,7 @@ public class CreateHandler extends MethodHandler {
 	private ObjectMapper mapper;
 
 	public CreateHandler(WebSocketSession session, CreateRequest payload, NimbleRepository nimbleRepository,
-						 ObjectMapper mapper) {
+			ObjectMapper mapper) {
 		// TODO: Seguramente no haga falta pasar tantos argumentos
 		this.session = session;
 		this.payload = payload;
@@ -37,11 +37,13 @@ public class CreateHandler extends MethodHandler {
 	@Override
 	public void run() {
 		String lobbyId = "";
-		do{
+		do {
 			lobbyId = RandomStringUtils.random(2, true, false);
-			//TODO: Esto esta feo y hay que hacer un generador de lobbys como clase separada
-			//entre otras cosas deberia decir si no hay mas lobbies disponibles
-		}while(nimbleRepository.containsLobbyKey(lobbyId));
+			// TODO: Esto esta feo y hay que hacer un generador de lobbys como clase
+			// separada
+			// entre otras cosas deberia decir si no hay mas lobbies disponibles
+		}
+		while (nimbleRepository.containsLobbyKey(lobbyId));
 
 		if (!nimbleRepository.containsUserKey(payload.getSessionId())) {
 			logger.error("Alguien que no existe quiere crear partida!");
@@ -53,9 +55,11 @@ public class CreateHandler extends MethodHandler {
 		nimbleRepository.putLobby(lobbyId, new Lobby(lobbyId, payload.getSessionId()));
 		try {
 			user.send(mapper.writeValueAsString(StatusResponse.SuccessfulResponse("operation_status")));
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			e.printStackTrace();
 		}
 		logger.info(String.format("%s creó el lobby \"%s\"", payload.getName(), lobbyId));
 	}
+
 }

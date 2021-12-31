@@ -25,7 +25,7 @@ public class ReconnectHandler extends MethodHandler {
 	private ObjectMapper mapper;
 
 	public ReconnectHandler(WebSocketSession session, ReconnectRequest payload, NimbleRepository nimbleRepository,
-							ObjectMapper mapper) {
+			ObjectMapper mapper) {
 		this.session = session;
 		this.payload = payload;
 		this.nimbleRepository = nimbleRepository;

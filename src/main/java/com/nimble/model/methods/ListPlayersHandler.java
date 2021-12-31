@@ -26,7 +26,7 @@ public class ListPlayersHandler extends MethodHandler {
 	private ObjectMapper mapper;
 
 	public ListPlayersHandler(WebSocketSession session, ListPlayersRequest payload, NimbleRepository nimbleRepository,
-							  ObjectMapper mapper) {
+			ObjectMapper mapper) {
 		this.session = session;
 		this.payload = payload;
 		this.nimbleRepository = nimbleRepository;
