@@ -101,7 +101,7 @@ public class Lobby {
 		return game.playDiscardCard(getPlayerNumber(userId), playTo);
 	}
 
-	private int getPlayerNumber(String userId) {
+	public int getPlayerNumber(String userId) {
 		return usersIds.indexOf(userId);
 	}
 

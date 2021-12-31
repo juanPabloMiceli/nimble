@@ -65,10 +65,10 @@ public class JoinHandler extends MethodHandler {
 
 		messenger.send(user.getId(), new SuccessfulResponse());
 
-		nimbleRepository.usersAtLobby(lobby.getId()).forEach(_user -> {
-			messenger.send(_user.getId(),
-					new LobbyInfoResponse(nimbleRepository.usersDtoAtLobby(lobby.getId()), lobby.getId()));
-		});
+		for (int playerNumber = 0; playerNumber < lobby.getUsersIds().size(); playerNumber++) {
+			messenger.send(lobby.getUsersIds().get(playerNumber), new LobbyInfoResponse(playerNumber,
+					nimbleRepository.usersDtoAtLobby(lobby.getId()), lobby.getId()));
+		}
 
 		logger.info(String.format("%s creó el lobby \"%s\"", payload.getName(), payload.getLobbyId()));
 	}

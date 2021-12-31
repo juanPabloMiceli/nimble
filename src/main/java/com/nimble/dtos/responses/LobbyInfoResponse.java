@@ -25,7 +25,8 @@ public class LobbyInfoResponse {
 
 	private List<UserDto> users;
 
-	public LobbyInfoResponse(List<UserDto> users, String lobbyId) {
+	public LobbyInfoResponse(int playerNumber, List<UserDto> users, String lobbyId) {
+		this.playerNumber = playerNumber;
 		this.users = users;
 		this.lobbyId = lobbyId;
 		this.method = "lobby_info";

@@ -36,8 +36,8 @@ public class GameStateHandler extends MethodHandler {
 		User user = nimbleRepository.getUser(payload.getSessionId());
 		Lobby lobby = nimbleRepository.getLobby(user.getLobbyId());
 
-		messenger.send(user.getId(), new GameStateResponse(0, nimbleRepository.usersDtoAtLobby(lobby.getId()),
-				new GameDto(lobby.getGame())));
+		messenger.send(user.getId(), new GameStateResponse(lobby.getPlayerNumber(user.getId()),
+				nimbleRepository.usersDtoAtLobby(lobby.getId()), new GameDto(lobby.getGame())));
 
 		logger.info(String.format("Listing players for %s", user.getName()));
 	}

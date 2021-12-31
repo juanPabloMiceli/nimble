@@ -35,8 +35,8 @@ public class LobbyInfoHandler extends MethodHandler {
 		User user = nimbleRepository.getUser(payload.getSessionId());
 		Lobby lobby = nimbleRepository.getLobby(user.getLobbyId());
 
-		messenger.send(user.getId(),
-				new LobbyInfoResponse(nimbleRepository.usersDtoAtLobby(lobby.getId()), lobby.getId()));
+		messenger.send(user.getId(), new LobbyInfoResponse(lobby.getPlayerNumber(user.getId()),
+				nimbleRepository.usersDtoAtLobby(lobby.getId()), lobby.getId()));
 
 		logger.info(String.format("Listing players for %s", user.getName()));
 

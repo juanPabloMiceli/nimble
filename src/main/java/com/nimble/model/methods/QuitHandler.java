@@ -36,8 +36,12 @@ public class QuitHandler extends MethodHandler {
 		User user = nimbleRepository.getUser(payload.getSessionId());
 		Lobby lobby = nimbleRepository.getLobby(user.getLobbyId());
 		lobby.remove(payload.getSessionId());
-		messenger.broadcastToLobbyOf(user.getId(),
-				new LobbyInfoResponse(nimbleRepository.usersDtoAtLobby(lobby.getId()), lobby.getId()));
+
+		for (int playerNumber = 0; playerNumber < lobby.getUsersIds().size(); playerNumber++) {
+			messenger.send(lobby.getUsersIds().get(playerNumber), new LobbyInfoResponse(playerNumber,
+					nimbleRepository.usersDtoAtLobby(lobby.getId()), lobby.getId()));
+		}
+
 		logger.info(String.format("%s salió del lobby \"%s\"", user.getName(), user.getLobbyId()));
 	}
 

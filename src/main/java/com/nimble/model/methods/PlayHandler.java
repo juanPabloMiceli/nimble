@@ -63,8 +63,10 @@ public class PlayHandler extends MethodHandler {
 		if (result) {
 			logger.info(String.format("Bien jugado %s!", user.getName()));
 
-			messenger.broadcastToLobbyOf(user.getId(), new GameStateResponse(0,
-					nimbleRepository.usersDtoAtLobby(lobby.getId()), new GameDto(lobby.getGame())));
+			for (int playerNumber = 0; playerNumber < lobby.getUsersIds().size(); playerNumber++) {
+				messenger.send(lobby.getUsersIds().get(playerNumber), new GameStateResponse(playerNumber,
+						nimbleRepository.usersDtoAtLobby(lobby.getId()), new GameDto(lobby.getGame())));
+			}
 
 			if (lobby.isFinished()) {
 				messenger.broadcastToLobbyOf(user.getId(),
