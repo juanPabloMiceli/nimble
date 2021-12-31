@@ -2,8 +2,10 @@ package com.nimble.model.methods;
 
 import com.nimble.configurations.Messenger;
 import com.nimble.dtos.game.GameDto;
+import com.nimble.dtos.game.UserDto;
 import com.nimble.dtos.requests.PlayRequest;
 import com.nimble.dtos.responses.GameStateResponse;
+import com.nimble.dtos.responses.WinnerResponse;
 import com.nimble.dtos.responses.status.InvalidPlayResponse;
 import com.nimble.exceptions.service.InvalidPlayFromException;
 import com.nimble.model.Lobby;
@@ -60,8 +62,14 @@ public class PlayHandler extends MethodHandler {
 
 		if (result) {
 			logger.info(String.format("Bien jugado %s!", user.getName()));
+
 			messenger.broadcastToLobbyOf(user.getId(), new GameStateResponse(0,
 					nimbleRepository.usersDtoAtLobby(lobby.getId()), new GameDto(lobby.getGame())));
+
+			if (lobby.isFinished()) {
+				messenger.broadcastToLobbyOf(user.getId(),
+						new WinnerResponse(new UserDto(nimbleRepository.getUser(lobby.getWinnerId()))));
+			}
 		}
 		else {
 			logger.error(String.format("Sabes jugar %s?\n", user.getName()));

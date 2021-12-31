@@ -2,6 +2,7 @@ package com.nimble.model;
 
 import com.nimble.exceptions.lobby.UserAlreadyInLobbyException;
 import com.nimble.exceptions.lobby.UserDoesNotBelongToLobbyException;
+import com.nimble.model.enums.LobbyState;
 import com.nimble.model.game.Game;
 
 import java.util.ArrayList;
@@ -13,12 +14,15 @@ public class Lobby {
 
 	private String id;
 
+	private LobbyState lobbyState;
+
 	private Game game;
 
 	private List<String> usersIds = new ArrayList<>();
 
 	public Lobby(String id, String userId) {
 		this.id = id;
+		this.lobbyState = LobbyState.READY;
 		add(userId);
 
 	}
@@ -31,6 +35,7 @@ public class Lobby {
 		id = lobby.id;
 		game = lobby.game;
 		usersIds = lobby.usersIds;
+		lobbyState = lobby.lobbyState;
 	}
 
 	public void add(String userId) {
@@ -53,6 +58,7 @@ public class Lobby {
 
 	public void start() {
 		game = new Game(totalPlayers(), DECKS);
+		lobbyState = LobbyState.RUNNING;
 	}
 
 	private int totalPlayers() {
@@ -80,7 +86,14 @@ public class Lobby {
 	}
 
 	public Boolean playFromHand(String userId, int playTo) {
-		return game.playOnHandCard(getPlayerNumber(userId), playTo);
+		if (game.playOnHandCard(getPlayerNumber(userId), playTo)) {
+			if (game.isOver()) {
+				lobbyState = LobbyState.FINISHED;
+			}
+			return true;
+		}
+		return false;
+
 	}
 
 	// TODO: playTo renombrar por algo mas declarativo
@@ -90,6 +103,17 @@ public class Lobby {
 
 	private int getPlayerNumber(String userId) {
 		return usersIds.indexOf(userId);
+	}
+
+	public String getWinnerId() {
+		if (!game.isOver()) {
+			return null;
+		}
+		return usersIds.get(game.winner());
+	}
+
+	public Boolean isFinished() {
+		return lobbyState.equals(LobbyState.FINISHED);
 	}
 
 }
