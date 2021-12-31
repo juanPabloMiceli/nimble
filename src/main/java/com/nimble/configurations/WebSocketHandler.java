@@ -25,18 +25,21 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
 	private final ObjectMapper mapper = new ObjectMapper();
 
-	public WebSocketHandler(NimbleRepository nimbleRepository) {
+	private final Messenger messenger;
+
+	public WebSocketHandler(NimbleRepository nimbleRepository, Messenger messenger) {
 		this.nimbleRepository = nimbleRepository;
+		this.messenger = messenger;
 	}
 
 	@Override
 	public void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException {
-		MethodHandlerFactory.create(nimbleRepository, message.getPayload(), session).run();
+		MethodHandlerFactory.create(nimbleRepository, message.getPayload(), session, messenger).run();
 	}
 
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws IOException {
-		logger.info(String.format("%s connected", session.getRemoteAddress()));
+		logger.info(String.format("%s connected ID: %s", session.getRemoteAddress(), session.getId()));
 		if (nimbleRepository.containsUserKey(session.getId())) {
 			throw new RuntimeException("WHAT, LA SESIONES SE MANTIENEN!!");
 		}
