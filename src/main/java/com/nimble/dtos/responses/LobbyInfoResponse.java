@@ -25,7 +25,7 @@ public class LobbyInfoResponse {
 	public LobbyInfoResponse(List<UserDto> users, String lobbyId) {
 		this.users = users;
 		this.lobbyId = lobbyId;
-		this.method = "list_players";
+		this.method = "lobby_info";
 	}
 
 }
