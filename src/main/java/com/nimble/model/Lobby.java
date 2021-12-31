@@ -17,8 +17,6 @@ public class Lobby {
 
 	private List<String> usersIds = new ArrayList<>();
 
-
-
 	public Lobby(String id, String userId) {
 		this.id = id;
 		add(userId);
