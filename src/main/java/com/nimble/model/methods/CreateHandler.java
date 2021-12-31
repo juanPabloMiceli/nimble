@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
+import java.util.Locale;
 
 public class CreateHandler extends MethodHandler {
 
@@ -38,7 +39,7 @@ public class CreateHandler extends MethodHandler {
 	public void run() {
 		String lobbyId = "";
 		do {
-			lobbyId = RandomStringUtils.random(2, true, false);
+			lobbyId = RandomStringUtils.random(4, true, false).toUpperCase(Locale.ROOT);
 			// TODO: Esto esta feo y hay que hacer un generador de lobbys como clase
 			// separada
 			// entre otras cosas deberia decir si no hay mas lobbies disponibles
