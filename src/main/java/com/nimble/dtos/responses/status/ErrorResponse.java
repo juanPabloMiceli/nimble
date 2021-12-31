@@ -1,4 +1,4 @@
-package com.nimble.dtos.responses.errors;
+package com.nimble.dtos.responses.status;
 
 import lombok.Getter;
 import lombok.Setter;

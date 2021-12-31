@@ -2,9 +2,8 @@ package com.nimble.model.methods;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimble.dtos.requests.CreateRequest;
-import com.nimble.dtos.responses.errors.StatusResponse;
-import com.nimble.dtos.responses.errors.SuccessfulResponse;
-import com.nimble.dtos.responses.errors.UnexpectedErrorResponse;
+import com.nimble.dtos.responses.status.SuccessfulResponse;
+import com.nimble.dtos.responses.status.UnexpectedErrorResponse;
 import com.nimble.model.Lobby;
 import com.nimble.model.User;
 import com.nimble.repositories.NimbleRepository;

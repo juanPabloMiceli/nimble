@@ -1,4 +1,4 @@
-package com.nimble.dtos.responses.errors;
+package com.nimble.dtos.responses.status;
 
 public class UnexpectedErrorResponse extends StatusResponse {
 
