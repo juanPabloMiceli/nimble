@@ -1,5 +1,6 @@
 package com.nimble.dtos.responses;
 
+import com.nimble.dtos.game.UserDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,14 +12,17 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-public class ListPlayersResponse {
+public class LobbyInfoResponse {
 
 	private String method;
 
-	private List<String> names;
+	private String lobbyId;
 
-	public ListPlayersResponse(List<String> names) {
+	private List<UserDto> names;
+
+	public LobbyInfoResponse(List<UserDto> names, String lobbyId) {
 		this.names = names;
+		this.lobbyId = lobbyId;
 		this.method = "list_players";
 	}
 

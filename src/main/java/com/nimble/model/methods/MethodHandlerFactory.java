@@ -34,9 +34,9 @@ public class MethodHandlerFactory {
 		case "reconnect":
 			return new ReconnectHandler(session, mapper.readValue(payload, ReconnectRequest.class), nimbleRepository,
 					mapper);
-		case "list_players":
-			return new ListPlayersHandler(session, mapper.readValue(payload, ListPlayersRequest.class),
-					nimbleRepository, mapper);
+		case "lobby_info":
+			return new LobbyInfoHandler(session, mapper.readValue(payload, LobbyInfoRequest.class), nimbleRepository,
+					mapper);
 		default:
 			throw new InvalidMethodException(method);
 		}

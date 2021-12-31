@@ -1,17 +1,19 @@
 package com.nimble.model.methods;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nimble.dtos.game.UserDto;
 import com.nimble.dtos.requests.JoinRequest;
 import com.nimble.dtos.responses.StatusResponse;
 import com.nimble.model.Lobby;
 import com.nimble.model.User;
-import com.nimble.dtos.responses.ListPlayersResponse;
+import com.nimble.dtos.responses.LobbyInfoResponse;
 import com.nimble.repositories.NimbleRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
+import java.util.stream.Collectors;
 
 public class JoinHandler extends MethodHandler {
 
@@ -47,8 +49,9 @@ public class JoinHandler extends MethodHandler {
 			user.send(mapper.writeValueAsString(StatusResponse.SuccessfulResponse("operation_status")));
 			nimbleRepository.usersAtLobby(lobby.getId()).forEach(_user -> {
 				try {// TODO: revisar por que hay 2 try catch.
-					_user.send(mapper
-							.writeValueAsString(new ListPlayersResponse(nimbleRepository.namesAtLobby(lobby.getId()))));
+					_user.send(
+							mapper.writeValueAsString(new LobbyInfoResponse(nimbleRepository.usersAtLobby(lobby.getId())
+									.stream().map(UserDto::new).collect(Collectors.toList()), lobby.getId())));
 				}
 				catch (IOException e) {
 					e.printStackTrace();

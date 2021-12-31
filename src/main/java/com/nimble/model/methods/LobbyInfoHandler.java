@@ -1,10 +1,11 @@
 package com.nimble.model.methods;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nimble.dtos.requests.ListPlayersRequest;
+import com.nimble.dtos.game.UserDto;
+import com.nimble.dtos.requests.LobbyInfoRequest;
 import com.nimble.model.Lobby;
 import com.nimble.model.User;
-import com.nimble.dtos.responses.ListPlayersResponse;
+import com.nimble.dtos.responses.LobbyInfoResponse;
 import com.nimble.repositories.NimbleRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,19 +14,19 @@ import org.springframework.web.socket.WebSocketSession;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
-public class ListPlayersHandler extends MethodHandler {
+public class LobbyInfoHandler extends MethodHandler {
 
 	private WebSocketSession session;
 
-	private ListPlayersRequest payload;
+	private LobbyInfoRequest payload;
 
 	private NimbleRepository nimbleRepository;
 
-	private final Logger logger = LoggerFactory.getLogger(ListPlayersHandler.class);
+	private final Logger logger = LoggerFactory.getLogger(LobbyInfoHandler.class);
 
 	private ObjectMapper mapper;
 
-	public ListPlayersHandler(WebSocketSession session, ListPlayersRequest payload, NimbleRepository nimbleRepository,
+	public LobbyInfoHandler(WebSocketSession session, LobbyInfoRequest payload, NimbleRepository nimbleRepository,
 			ObjectMapper mapper) {
 		this.session = session;
 		this.payload = payload;
@@ -41,8 +42,8 @@ public class ListPlayersHandler extends MethodHandler {
 		logger.info(String.format("Listing players for %s", user.getName()));
 
 		try {
-			user.send(mapper.writeValueAsString(new ListPlayersResponse(lobby.getUsersIds().stream()
-					.map(userId -> nimbleRepository.getUser(userId).getName()).collect(Collectors.toList()))));
+			user.send(mapper.writeValueAsString(new LobbyInfoResponse(nimbleRepository.usersAtLobby(lobby.getId())
+					.stream().map(UserDto::new).collect(Collectors.toList()), lobby.getId())));
 		}
 		catch (IOException e) {
 			e.printStackTrace();

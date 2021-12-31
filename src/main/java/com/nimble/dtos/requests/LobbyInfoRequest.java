@@ -10,7 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class ListPlayersRequest {
+public class LobbyInfoRequest {
 
 	private String method;
 
