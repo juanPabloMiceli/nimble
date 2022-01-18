@@ -51,5 +51,4 @@ public class WebSocketHandler extends TextWebSocketHandler {
 	public void afterConnectionClosed(WebSocketSession session, @NotNull CloseStatus status) {
 		logger.info(String.format("%s left", session.getRemoteAddress()));
 	}
-
 }

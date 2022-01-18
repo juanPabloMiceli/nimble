@@ -2,6 +2,8 @@ package com.nimble.model.game;
 
 import lombok.AllArgsConstructor;
 
+import java.util.List;
+
 @AllArgsConstructor
 public class Player {
 
@@ -9,12 +11,10 @@ public class Player {
 
 	private Deck discardDeck;
 
-	private Card handCard;
-
 	public Player() {
-		discardDeck = new Deck();
 		onHandsDeck = Deck.startingDeck();
-		handCard = draw();
+		discardDeck = new Deck();
+		discard();
 	}
 
 	public Player(Player player) {
@@ -23,11 +23,6 @@ public class Player {
 		}
 		discardDeck = player.discardDeck;
 		onHandsDeck = player.onHandsDeck;
-		handCard = player.handCard;
-	}
-
-	public Card getHandCard() {
-		return handCard;
 	}
 
 	public Card peekDiscardDeck() {
@@ -35,47 +30,39 @@ public class Player {
 	}
 
 	public int totalCards() {
-		return discardDeck.size() + onHandsDeck.size() + 1;
+		return discardDeck.size() + onHandsDeck.size();
 	}
 
 	public void discard() {
-		discardDeck.add(handCard);
-		handCard = draw();
-	}
-
-	private Card draw() {
 		if (onHandsDeck.isEmpty()) {
 			if (discardDeck.isEmpty()) {
-				return null;
+				return;
 			}
 			// Como no tengo de donde agarrar paso el mazo del descarte a la mano
 			// invirtiendo su orden:
 			while (!discardDeck.isEmpty()) {
 				onHandsDeck.add(discardDeck.draw());
 			}
-
 		}
-		// Saco la primer carta del mazo y la devuelvo
-		return onHandsDeck.draw();
+		discardDeck.add(onHandsDeck.draw());
+	}
+
+	public Boolean recover() {
+		if (discardDeck.size() <= 1) {
+			return false;
+		}
+		onHandsDeck.add(discardDeck.draw());
+		return true;
 	}
 
 	// Player plays his hand card
 	public Boolean playHandCard(Deck deckBoard) {
-		if (!deckBoard.canplay(this.handCard)) {
-			return false;
-		}
-
-		deckBoard.add(this.handCard);
-		handCard = draw();
-		return true;
-	}
-
-	public Boolean playDiscardCard(Deck deckBoard) {
 		if (!deckBoard.canplay(discardDeck.peek())) {
 			return false;
 		}
 
 		deckBoard.add(discardDeck.draw());
+		discard();
 		return true;
 	}
 
@@ -91,4 +78,28 @@ public class Player {
 		return onHandsDeck.size();
 	}
 
+	public Boolean isStuck(List<Card> centerCards) {
+		return !canPlayAnyCard(onHandsDeck, centerCards) && !canPlayAnyCard(discardDeck, centerCards);
+	}
+
+	private Boolean canPlayCard(Card card, List<Card> centerCards) {
+		return centerCards.stream().anyMatch(card::canBePlayedAfter);
+	}
+
+	private Boolean canPlayAnyCard(Deck deck, List<Card> centerCards) {
+		boolean canPlay = false;
+
+		Deck auxiliarDeck = new Deck();
+		while (!deck.isEmpty()) {
+			Card topCard = deck.draw();
+			auxiliarDeck.add(topCard);
+			canPlay |= canPlayCard(topCard, centerCards);
+		}
+
+		while (!auxiliarDeck.isEmpty()) {
+			deck.add(auxiliarDeck.draw());
+		}
+
+		return canPlay;
+	}
 }

@@ -31,5 +31,4 @@ public class LobbyInfoResponse {
 		this.lobbyId = lobbyId;
 		this.method = "lobby_info";
 	}
-
 }

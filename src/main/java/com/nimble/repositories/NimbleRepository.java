@@ -96,5 +96,4 @@ public class NimbleRepository {
 	public List<UserDto> usersDtoAtLobbyOf(String userId) {
 		return usersAtLobbyOf(userId).stream().map(UserDto::new).collect(Collectors.toList());
 	}
-
 }

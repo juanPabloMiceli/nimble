@@ -5,5 +5,4 @@ public class SuccessfulResponse extends StatusResponse {
 	public SuccessfulResponse() {
 		super("success", "");
 	}
-
 }

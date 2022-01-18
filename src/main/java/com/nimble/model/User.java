@@ -72,10 +72,8 @@ public class User {
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o)
-			return true;
-		if (!(o instanceof User))
-			return false;
+		if (this == o) return true;
+		if (!(o instanceof User)) return false;
 		User user = (User) o;
 		return getName().equals(user.getName()) && session.equals(user.session);
 	}
@@ -84,5 +82,4 @@ public class User {
 	public int hashCode() {
 		return Objects.hash(getName(), session);
 	}
-
 }

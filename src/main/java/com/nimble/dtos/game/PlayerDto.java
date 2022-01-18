@@ -17,9 +17,6 @@ public class PlayerDto {
 	@JsonProperty("discard_deck")
 	private DeckDto discardDeck;
 
-	@JsonProperty("hand_card")
-	private CardDto handCard;
-
 	@JsonProperty("total_cards")
 	private Integer totalCards;
 
@@ -29,8 +26,6 @@ public class PlayerDto {
 		}
 		onHandsDeck = new DeckDto(null, player.getOnHandsDeckSize());
 		discardDeck = new DeckDto(new CardDto(player.peekDiscardDeck()), player.getDiscardDeckSize());
-		handCard = new CardDto(player.getHandCard());
 		totalCards = player.totalCards();
 	}
-
 }

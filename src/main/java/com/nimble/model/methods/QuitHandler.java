@@ -22,8 +22,12 @@ public class QuitHandler extends MethodHandler {
 
 	private Messenger messenger;
 
-	public QuitHandler(WebSocketSession session, QuitRequest payload, NimbleRepository nimbleRepository,
-			Messenger messenger) {
+	public QuitHandler(
+		WebSocketSession session,
+		QuitRequest payload,
+		NimbleRepository nimbleRepository,
+		Messenger messenger
+	) {
 		this.session = session;
 		this.payload = payload;
 		this.nimbleRepository = nimbleRepository;
@@ -38,11 +42,12 @@ public class QuitHandler extends MethodHandler {
 		lobby.remove(payload.getSessionId());
 
 		for (int playerNumber = 0; playerNumber < lobby.getUsersIds().size(); playerNumber++) {
-			messenger.send(lobby.getUsersIds().get(playerNumber), new LobbyInfoResponse(playerNumber,
-					nimbleRepository.usersDtoAtLobby(lobby.getId()), lobby.getId()));
+			messenger.send(
+				lobby.getUsersIds().get(playerNumber),
+				new LobbyInfoResponse(playerNumber, nimbleRepository.usersDtoAtLobby(lobby.getId()), lobby.getId())
+			);
 		}
 
 		logger.info(String.format("%s salió del lobby \"%s\"", user.getName(), user.getLobbyId()));
 	}
-
 }

@@ -23,5 +23,4 @@ public class DeckDto {
 		topCard = new CardDto(deck.peek());
 		size = deck.size();
 	}
-
 }

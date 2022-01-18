@@ -22,8 +22,12 @@ public class ReconnectHandler extends MethodHandler {
 
 	private Messenger messenger;
 
-	public ReconnectHandler(WebSocketSession session, ReconnectRequest payload, NimbleRepository nimbleRepository,
-			Messenger messenger) {
+	public ReconnectHandler(
+		WebSocketSession session,
+		ReconnectRequest payload,
+		NimbleRepository nimbleRepository,
+		Messenger messenger
+	) {
 		this.session = session;
 		this.payload = payload;
 		this.nimbleRepository = nimbleRepository;
@@ -42,5 +46,4 @@ public class ReconnectHandler extends MethodHandler {
 		nimbleRepository.putUser(payload.getSessionId(), user);
 		messenger.send(user.getId(), new ReconnectResponse(new UserDto(user)));
 	}
-
 }

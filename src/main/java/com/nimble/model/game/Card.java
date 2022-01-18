@@ -64,5 +64,4 @@ public class Card {
 		Collections.shuffle(validColors);
 		return new Card(validColors.get(0).name(), validColors.get(1).name());
 	}
-
 }

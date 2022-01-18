@@ -22,5 +22,4 @@ public class ReconnectResponse {
 		this.method = "reconnect";
 		this.user = user;
 	}
-
 }

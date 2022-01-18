@@ -32,7 +32,5 @@ public class LobbyDto {
 		lobby.getUsersIds().forEach(userId -> this.users.add(new UserDto(nimbleRepository.getUser(userId))));
 		this.id = lobby.getId();
 		this.game = new GameDto(lobby.getGame());
-
 	}
-
 }

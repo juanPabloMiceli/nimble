@@ -16,5 +16,4 @@ public class DiscardRequest {
 
 	@JsonProperty("session_id")
 	private String sessionId;
-
 }

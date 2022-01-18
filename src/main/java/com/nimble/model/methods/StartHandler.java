@@ -23,8 +23,12 @@ public class StartHandler extends MethodHandler {
 
 	private Messenger messenger;
 
-	public StartHandler(WebSocketSession session, StartRequest payload, NimbleRepository nimbleRepository,
-			Messenger messenger) {
+	public StartHandler(
+		WebSocketSession session,
+		StartRequest payload,
+		NimbleRepository nimbleRepository,
+		Messenger messenger
+	) {
 		this.session = session;
 		this.payload = payload;
 		this.nimbleRepository = nimbleRepository;
@@ -33,7 +37,6 @@ public class StartHandler extends MethodHandler {
 
 	@Override
 	public void run() {
-
 		if (!nimbleRepository.containsUserKey(payload.getSessionId())) {
 			throw new RuntimeException("Alguien que no existe quiere iniciar!!!");
 		}
@@ -49,5 +52,4 @@ public class StartHandler extends MethodHandler {
 		messenger.send(user.getId(), new LobbyDto(lobby, nimbleRepository));
 		logger.info(String.format("Se inició el lobby \"%s\"", user.getLobbyId()));
 	}
-
 }

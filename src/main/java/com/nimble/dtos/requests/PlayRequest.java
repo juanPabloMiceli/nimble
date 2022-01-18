@@ -1,7 +1,6 @@
 package com.nimble.dtos.requests;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.nimble.dtos.enums.PlayFrom;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,10 +17,6 @@ public class PlayRequest {
 	@JsonProperty("session_id")
 	private String sessionId;
 
-	@JsonProperty("play_from")
-	private PlayFrom playFrom;
-
 	@JsonProperty("play_to")
 	private int playTo;
-
 }

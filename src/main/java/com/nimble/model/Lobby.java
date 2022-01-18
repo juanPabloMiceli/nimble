@@ -24,7 +24,6 @@ public class Lobby {
 		this.id = id;
 		this.lobbyState = LobbyState.READY;
 		add(userId);
-
 	}
 
 	public Lobby(Lobby lobby) {
@@ -85,20 +84,22 @@ public class Lobby {
 		game.discard(getPlayerNumber(userId));
 	}
 
-	public Boolean playFromHand(String userId, int playTo) {
-		if (game.playOnHandCard(getPlayerNumber(userId), playTo)) {
-			if (game.isOver()) {
-				lobbyState = LobbyState.FINISHED;
-			}
-			return true;
-		}
-		return false;
-
+	public Boolean recover(String userId) {
+		return game.recover(getPlayerNumber(userId));
 	}
 
-	// TODO: playTo renombrar por algo mas declarativo
-	public Boolean playFromDiscard(String userId, int playTo) {
-		return game.playDiscardCard(getPlayerNumber(userId), playTo);
+	public Boolean playFromHand(String userId, int playTo) {
+		if (!game.playOnHandCard(getPlayerNumber(userId), playTo)) {
+			return false;
+		}
+
+		if (game.isOver()) {
+			lobbyState = LobbyState.FINISHED;
+		} else if (game.isStuck()) {
+			lobbyState = LobbyState.STUCK;
+		}
+
+		return true;
 	}
 
 	public int getPlayerNumber(String userId) {
@@ -116,4 +117,7 @@ public class Lobby {
 		return lobbyState.equals(LobbyState.FINISHED);
 	}
 
+	public Boolean isStuck() {
+		return lobbyState.equals(LobbyState.STUCK);
+	}
 }

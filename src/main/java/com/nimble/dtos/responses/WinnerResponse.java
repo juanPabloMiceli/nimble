@@ -16,5 +16,4 @@ public class WinnerResponse {
 		this.method = "winner";
 		this.user = userDto;
 	}
-
 }

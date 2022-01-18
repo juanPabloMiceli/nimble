@@ -16,5 +16,4 @@ public class StartRequest {
 
 	@JsonProperty("session_id")
 	private String sessionId;
-
 }

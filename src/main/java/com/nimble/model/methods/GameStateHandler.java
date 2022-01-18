@@ -23,8 +23,12 @@ public class GameStateHandler extends MethodHandler {
 
 	private Messenger messenger;
 
-	public GameStateHandler(WebSocketSession session, GameStateRequest payload, NimbleRepository nimbleRepository,
-			Messenger messenger) {
+	public GameStateHandler(
+		WebSocketSession session,
+		GameStateRequest payload,
+		NimbleRepository nimbleRepository,
+		Messenger messenger
+	) {
 		this.session = session;
 		this.payload = payload;
 		this.nimbleRepository = nimbleRepository;
@@ -36,10 +40,15 @@ public class GameStateHandler extends MethodHandler {
 		User user = nimbleRepository.getUser(payload.getSessionId());
 		Lobby lobby = nimbleRepository.getLobby(user.getLobbyId());
 
-		messenger.send(user.getId(), new GameStateResponse(lobby.getPlayerNumber(user.getId()),
-				nimbleRepository.usersDtoAtLobby(lobby.getId()), new GameDto(lobby.getGame())));
+		messenger.send(
+			user.getId(),
+			new GameStateResponse(
+				lobby.getPlayerNumber(user.getId()),
+				nimbleRepository.usersDtoAtLobby(lobby.getId()),
+				new GameDto(lobby.getGame())
+			)
+		);
 
 		logger.info(String.format("Listing players for %s", user.getName()));
 	}
-
 }

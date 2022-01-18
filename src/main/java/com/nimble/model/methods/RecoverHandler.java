@@ -2,11 +2,8 @@ package com.nimble.model.methods;
 
 import com.nimble.configurations.Messenger;
 import com.nimble.dtos.game.GameDto;
-import com.nimble.dtos.game.UserDto;
-import com.nimble.dtos.requests.PlayRequest;
+import com.nimble.dtos.requests.RecoverRequest;
 import com.nimble.dtos.responses.GameStateResponse;
-import com.nimble.dtos.responses.TieResponse;
-import com.nimble.dtos.responses.WinnerResponse;
 import com.nimble.dtos.responses.status.InvalidPlayResponse;
 import com.nimble.model.Lobby;
 import com.nimble.model.User;
@@ -15,21 +12,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.socket.WebSocketSession;
 
-public class PlayHandler extends MethodHandler {
+public class RecoverHandler extends MethodHandler {
 
 	private WebSocketSession session;
 
-	private PlayRequest payload;
+	private RecoverRequest payload;
 
 	private NimbleRepository nimbleRepository;
 
-	private final Logger logger = LoggerFactory.getLogger(PlayHandler.class);
+	private final Logger logger = LoggerFactory.getLogger(RecoverHandler.class);
 
 	private Messenger messenger;
 
-	public PlayHandler(
+	public RecoverHandler(
 		WebSocketSession session,
-		PlayRequest payload,
+		RecoverRequest payload,
 		NimbleRepository nimbleRepository,
 		Messenger messenger
 	) {
@@ -41,19 +38,16 @@ public class PlayHandler extends MethodHandler {
 
 	@Override
 	public void run() {
-		// TODO: Chequear user/lobby existen, chequear que este iniciado
 		User user = nimbleRepository.getUser(payload.getSessionId());
 		Lobby lobby = nimbleRepository.getLobby(user.getLobbyId());
 
-		logger.info(String.format("%s quiere jugar desde la mano al mazo %d", user.getName(), payload.getPlayTo()));
-
-		if (!lobby.playFromHand(payload.getSessionId(), payload.getPlayTo())) {
-			logger.error(String.format("Sabes jugar %s?\n", user.getName()));
-			messenger.send(user.getId(), new InvalidPlayResponse(user.getName()));
+		if (!lobby.recover(payload.getSessionId())) {
+			messenger.send(payload.getSessionId(), new InvalidPlayResponse(user.getName()));
+			logger.info(String.format("%s, no podes recuperar una carta que no descartaste", user.getName()));
 			return;
 		}
 
-		logger.info(String.format("Bien jugado %s!", user.getName()));
+		logger.info(String.format("%s recuperó una carta", user.getName()));
 
 		for (int playerNumber = 0; playerNumber < lobby.getUsersIds().size(); playerNumber++) {
 			messenger.send(
@@ -64,19 +58,6 @@ public class PlayHandler extends MethodHandler {
 					new GameDto(lobby.getGame())
 				)
 			);
-		}
-
-		if (lobby.isFinished()) {
-			messenger.broadcastToLobbyOf(
-				user.getId(),
-				new WinnerResponse(new UserDto(nimbleRepository.getUser(lobby.getWinnerId())))
-			);
-			return;
-		}
-
-		if (lobby.isStuck()) {
-			messenger.broadcastToLobbyOf(user.getId(), new TieResponse());
-			return;
 		}
 	}
 }

@@ -19,8 +19,9 @@ public class WebSocketConfig implements WebSocketConfigurer {
 
 	@Override
 	public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-		registry.addHandler(webSocketHandler, "/nimble").addInterceptors(new HttpSessionHandshakeInterceptor())
-				.setAllowedOrigins("*");
+		registry
+			.addHandler(webSocketHandler, "/nimble")
+			.addInterceptors(new HttpSessionHandshakeInterceptor())
+			.setAllowedOrigins("*");
 	}
-
 }

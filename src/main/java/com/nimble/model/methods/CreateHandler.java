@@ -26,8 +26,12 @@ public class CreateHandler extends MethodHandler {
 
 	private Messenger messenger;
 
-	public CreateHandler(WebSocketSession session, CreateRequest payload, NimbleRepository nimbleRepository,
-			Messenger messenger) {
+	public CreateHandler(
+		WebSocketSession session,
+		CreateRequest payload,
+		NimbleRepository nimbleRepository,
+		Messenger messenger
+	) {
 		// TODO: Seguramente no haga falta pasar tantos argumentos
 		this.session = session;
 		this.payload = payload;
@@ -43,8 +47,7 @@ public class CreateHandler extends MethodHandler {
 			// TODO: Esto esta feo y hay que hacer un generador de lobbys como clase
 			// separada
 			// entre otras cosas deberia decir si no hay mas lobbies disponibles
-		}
-		while (nimbleRepository.containsLobbyKey(lobbyId));
+		} while (nimbleRepository.containsLobbyKey(lobbyId));
 
 		if (!nimbleRepository.containsUserKey(payload.getSessionId())) {
 			logger.error("Alguien que no existe quiere crear partida!");
@@ -59,5 +62,4 @@ public class CreateHandler extends MethodHandler {
 		messenger.send(user.getId(), new SuccessfulResponse());
 		logger.info(String.format("%s creó el lobby \"%s\"", payload.getName(), lobbyId));
 	}
-
 }

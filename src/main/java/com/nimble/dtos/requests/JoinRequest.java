@@ -21,5 +21,4 @@ public class JoinRequest {
 	private String sessionId;
 
 	private String name;
-
 }

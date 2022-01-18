@@ -23,8 +23,12 @@ public class DiscardHandler extends MethodHandler {
 
 	private Messenger messenger;
 
-	public DiscardHandler(WebSocketSession session, DiscardRequest payload, NimbleRepository nimbleRepository,
-			Messenger messenger) {
+	public DiscardHandler(
+		WebSocketSession session,
+		DiscardRequest payload,
+		NimbleRepository nimbleRepository,
+		Messenger messenger
+	) {
 		this.session = session;
 		this.payload = payload;
 		this.nimbleRepository = nimbleRepository;
@@ -39,11 +43,16 @@ public class DiscardHandler extends MethodHandler {
 		lobby.discard(payload.getSessionId());
 
 		for (int playerNumber = 0; playerNumber < lobby.getUsersIds().size(); playerNumber++) {
-			messenger.send(lobby.getUsersIds().get(playerNumber), new GameStateResponse(playerNumber,
-					nimbleRepository.usersDtoAtLobby(lobby.getId()), new GameDto(lobby.getGame())));
+			messenger.send(
+				lobby.getUsersIds().get(playerNumber),
+				new GameStateResponse(
+					playerNumber,
+					nimbleRepository.usersDtoAtLobby(lobby.getId()),
+					new GameDto(lobby.getGame())
+				)
+			);
 		}
 
 		logger.info(String.format("%s levantó una carta", user.getName()));
 	}
-
 }

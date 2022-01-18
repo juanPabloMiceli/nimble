@@ -2,13 +2,13 @@ package com.nimble.model.methods;
 
 import com.nimble.configurations.Messenger;
 import com.nimble.dtos.requests.JoinRequest;
+import com.nimble.dtos.responses.LobbyInfoResponse;
 import com.nimble.dtos.responses.status.LobbyNotFoundResponse;
 import com.nimble.dtos.responses.status.NameAlreadyInLobbyResponse;
 import com.nimble.dtos.responses.status.SuccessfulResponse;
 import com.nimble.dtos.responses.status.UnexpectedErrorResponse;
 import com.nimble.model.Lobby;
 import com.nimble.model.User;
-import com.nimble.dtos.responses.LobbyInfoResponse;
 import com.nimble.repositories.NimbleRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,8 +26,12 @@ public class JoinHandler extends MethodHandler {
 
 	private Messenger messenger;
 
-	public JoinHandler(WebSocketSession session, JoinRequest payload, NimbleRepository nimbleRepository,
-			Messenger messenger) {
+	public JoinHandler(
+		WebSocketSession session,
+		JoinRequest payload,
+		NimbleRepository nimbleRepository,
+		Messenger messenger
+	) {
 		this.session = session;
 		this.payload = payload;
 		this.nimbleRepository = nimbleRepository;
@@ -66,11 +70,12 @@ public class JoinHandler extends MethodHandler {
 		messenger.send(user.getId(), new SuccessfulResponse());
 
 		for (int playerNumber = 0; playerNumber < lobby.getUsersIds().size(); playerNumber++) {
-			messenger.send(lobby.getUsersIds().get(playerNumber), new LobbyInfoResponse(playerNumber,
-					nimbleRepository.usersDtoAtLobby(lobby.getId()), lobby.getId()));
+			messenger.send(
+				lobby.getUsersIds().get(playerNumber),
+				new LobbyInfoResponse(playerNumber, nimbleRepository.usersDtoAtLobby(lobby.getId()), lobby.getId())
+			);
 		}
 
 		logger.info(String.format("%s creó el lobby \"%s\"", payload.getName(), payload.getLobbyId()));
 	}
-
 }

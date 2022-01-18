@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 public class Game {
@@ -52,22 +53,25 @@ public class Game {
 		return players.get(playerNumber).playHandCard(decksBoard.get(deckNumber));
 	}
 
-	public Boolean playDiscardCard(int playerNumber, int deckNumber) {
-		if (playerNumber >= players.size()) {
-			throw new InvalidPlayerNumberException(playerNumber);
-		}
-		if (deckNumber >= decksBoard.size()) {
-			throw new InvalidDeckNumberException(deckNumber);
-		}
-		return players.get(playerNumber).playDiscardCard(decksBoard.get(deckNumber));
-	}
-
 	public Card getDeckBoardTopCard(int index) {
 		return decksBoard.get(index).peek();
 	}
 
 	public Boolean isOver() {
 		return players.stream().anyMatch(Player::hasEnded);
+	}
+
+	public Boolean isStuck() {
+		return players
+			.stream()
+			.allMatch(player -> player.isStuck(decksBoard.stream().map(Deck::peek).collect(Collectors.toList())));
+	}
+
+	public Boolean recover(int playerNumber) {
+		if (playerNumber >= players.size()) {
+			throw new InvalidPlayerNumberException(playerNumber);
+		}
+		return players.get(playerNumber).recover();
 	}
 
 	public int winner() {
@@ -77,10 +81,6 @@ public class Game {
 			}
 		}
 		return -1;
-	}
-
-	public Card getHandCard(int index) {
-		return new Card(players.get(index).getHandCard());
 	}
 
 	public Card getDiscardTop(int index) {
@@ -106,5 +106,4 @@ public class Game {
 	public int totalDecks() {
 		return decksBoard.size();
 	}
-
 }

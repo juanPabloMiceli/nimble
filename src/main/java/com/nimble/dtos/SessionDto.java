@@ -21,5 +21,4 @@ public class SessionDto {
 		this.method = "session_share";
 		this.sessionId = sessionId;
 	}
-
 }

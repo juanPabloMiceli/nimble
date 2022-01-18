@@ -24,5 +24,4 @@ public class CardDto {
 		innerColor = card.getInnerColor();
 		outerColor = card.getOuterColor();
 	}
-
 }

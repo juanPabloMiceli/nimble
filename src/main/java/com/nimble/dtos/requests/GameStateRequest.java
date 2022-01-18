@@ -16,5 +16,4 @@ public class GameStateRequest {
 
 	@JsonProperty("session_id")
 	private String sessionId;
-
 }

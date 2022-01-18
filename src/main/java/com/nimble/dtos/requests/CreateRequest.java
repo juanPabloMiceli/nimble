@@ -16,5 +16,4 @@ public class CreateRequest {
 	private String sessionId;
 
 	private String name;
-
 }

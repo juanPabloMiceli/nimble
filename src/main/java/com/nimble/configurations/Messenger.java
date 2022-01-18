@@ -26,16 +26,16 @@ public class Messenger {
 	public void send(WebSocketSession session, Object messageObject) {
 		try {
 			session.sendMessage(new TextMessage(mapper.writeValueAsString(messageObject)));
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
 	public void broadcastToLobbyOf(String userId, Object messageObject) {
-		nimbleRepository.sessionsAtUserLobby(userId).forEach(session -> {
-			send(session, messageObject);
-		});
+		nimbleRepository
+			.sessionsAtUserLobby(userId)
+			.forEach(session -> {
+				send(session, messageObject);
+			});
 	}
-
 }

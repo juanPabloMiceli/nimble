@@ -5,5 +5,4 @@ public class InvalidPlayResponse extends StatusResponse {
 	public InvalidPlayResponse(String name) {
 		super("error", "La cagaste con esa jugada " + name);
 	}
-
 }

@@ -16,5 +16,4 @@ public class ReconnectRequest {
 
 	@JsonProperty("session_id")
 	private String sessionId;
-
 }

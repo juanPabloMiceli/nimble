@@ -1,9 +1,9 @@
 package com.nimble;
 
 import com.nimble.exceptions.deck.EmptyDeckException;
+import com.nimble.model.enums.ValidCardColors;
 import com.nimble.model.game.Card;
 import com.nimble.model.game.Deck;
-import com.nimble.model.enums.ValidCardColors;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -37,7 +37,6 @@ public class DeckTest {
 
 	@Test
 	public void Test04_DeckInitializedWithCollectionHasCorrespondingSizeAndOrder() {
-
 		List<String> innerColors = getInnerColors();
 		List<String> outerColors = getOuterColors();
 
@@ -52,7 +51,6 @@ public class DeckTest {
 
 	@Test
 	public void Test05_PeekCardReturnsCardOnTopButDoesNotModifyDeck() {
-
 		List<String> innerColors = getInnerColors();
 		List<String> outerColors = getOuterColors();
 
@@ -63,12 +61,10 @@ public class DeckTest {
 
 		Assertions.assertEquals(totalCards, deck.size());
 		assertDeckEqualsList(deck, innerColors, outerColors);
-
 	}
 
 	@Test
 	public void Test06_DrawCardReturnsCardOnTopAndRemovesTopCardsFromDeck() {
-
 		List<String> innerColors = getInnerColors();
 		List<String> outerColors = getOuterColors();
 
@@ -86,12 +82,10 @@ public class DeckTest {
 		outerColors.remove(totalCards);
 
 		assertDeckEqualsList(deck, innerColors, outerColors);
-
 	}
 
 	@Test
 	public void Test07_AddingCardAddsItToTheTopOfTheDeck() {
-
 		List<String> innerColors = getInnerColors();
 		List<String> outerColors = getOuterColors();
 
@@ -105,7 +99,6 @@ public class DeckTest {
 		totalCards++;
 		Assertions.assertEquals(totalCards, deck.size());
 		assertDeckEqualsList(deck, innerColors, outerColors);
-
 	}
 
 	@Test
@@ -115,7 +108,6 @@ public class DeckTest {
 
 	@Test
 	public void Test9_StartingDeckHasNoRepeatedCards() {
-
 		Deck startingDeck = Deck.startingDeck();
 		int deckSize = startingDeck.size();
 
@@ -175,5 +167,4 @@ public class DeckTest {
 
 		return cards;
 	}
-
 }

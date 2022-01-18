@@ -16,5 +16,4 @@ public class QuitRequest {
 
 	@JsonProperty("session_id")
 	private String sessionId;
-
 }

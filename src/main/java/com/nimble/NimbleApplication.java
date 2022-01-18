@@ -9,5 +9,4 @@ public class NimbleApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(NimbleApplication.class, args);
 	}
-
 }

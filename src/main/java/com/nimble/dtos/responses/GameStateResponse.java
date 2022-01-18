@@ -31,5 +31,4 @@ public class GameStateResponse {
 		this.users = users;
 		this.game = game;
 	}
-
 }

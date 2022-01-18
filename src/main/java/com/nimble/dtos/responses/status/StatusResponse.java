@@ -18,5 +18,4 @@ public class StatusResponse {
 		this.description = description;
 		this.method = "operation_status";
 	}
-
 }

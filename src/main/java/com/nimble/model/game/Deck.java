@@ -27,13 +27,11 @@ public class Deck {
 	}
 
 	public static Deck startingDeck() {
-
 		ArrayList<Card> cards = new ArrayList<>();
 
 		for (ValidCardColors innerColor : ValidCardColors.values()) {
 			for (ValidCardColors outerColor : ValidCardColors.values()) {
-				if (innerColor.equals(outerColor))
-					continue;
+				if (innerColor.equals(outerColor)) continue;
 				cards.add(new Card(innerColor.name(), outerColor.name()));
 			}
 		}
@@ -76,5 +74,4 @@ public class Deck {
 		}
 		return card.canBePlayedAfter(cards.peek());
 	}
-
 }
