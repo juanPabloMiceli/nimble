@@ -2,7 +2,7 @@ package com.nimble.dtos;
 
 import com.nimble.dtos.game.GameDto;
 import com.nimble.dtos.game.UserDto;
-import com.nimble.model.Lobby;
+import com.nimble.model.server.Lobby;
 import com.nimble.repositories.NimbleRepository;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

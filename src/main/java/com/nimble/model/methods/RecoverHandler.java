@@ -4,9 +4,10 @@ import com.nimble.configurations.Messenger;
 import com.nimble.dtos.game.GameDto;
 import com.nimble.dtos.requests.RecoverRequest;
 import com.nimble.dtos.responses.GameStateResponse;
-import com.nimble.dtos.responses.status.InvalidPlayResponse;
-import com.nimble.model.Lobby;
-import com.nimble.model.User;
+import com.nimble.dtos.responses.errors.InvalidMoveErrorResponse;
+import com.nimble.dtos.responses.errors.UnexpectedErrorResponse;
+import com.nimble.model.server.Lobby;
+import com.nimble.model.server.User;
 import com.nimble.repositories.NimbleRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,14 +39,35 @@ public class RecoverHandler extends MethodHandler {
 
 	@Override
 	public void run() {
-		User user = nimbleRepository.getUser(payload.getSessionId());
-		Lobby lobby = nimbleRepository.getLobby(user.getLobbyId());
-
-		if (!lobby.recover(payload.getSessionId())) {
-			messenger.send(payload.getSessionId(), new InvalidPlayResponse(user.getName()));
-			logger.info(String.format("%s, no podes recuperar una carta que no descartaste", user.getName()));
+		if (!nimbleRepository.containsUserKey(payload.getSessionId())) {
+			messenger.send(session, new UnexpectedErrorResponse("Fijate que queres descartar pero no tenes una sesion!"));
+			logger.error("Alguien que no existe quiere descartar una carta!");
 			return;
 		}
+		User user = nimbleRepository.getUser(payload.getSessionId());
+
+		if (!nimbleRepository.containsLobbyKey(user.getLobbyId())) {
+			logger.info(String.format("%s se quiere descartar en un lobby que no existe!", user.getLobbyId()));
+			messenger.send(
+				user.getId(),
+				new UnexpectedErrorResponse(String.format("El lobby %s no existe!", user.getLobbyId()))
+			);
+			return;
+		}
+		Lobby lobby = nimbleRepository.getLobby(user.getLobbyId());
+
+		if (!lobby.isRunning()) {
+			logger.info(
+				String.format("%s quiere descartar en un lobby que no tiene una partida en curso!", user.getLobbyId())
+			);
+			messenger.send(
+				user.getId(),
+				new InvalidMoveErrorResponse(String.format("El lobby %s no tiene una partida en curso!", user.getLobbyId()))
+			);
+			return;
+		}
+
+		lobby.recover(user.getId());
 
 		logger.info(String.format("%s recuperó una carta", user.getName()));
 

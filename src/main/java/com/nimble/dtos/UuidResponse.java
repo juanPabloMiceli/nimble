@@ -10,15 +10,15 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class SessionDto {
+public class UuidResponse {
 
 	private String method;
 
 	@JsonProperty("session_id")
 	private String sessionId;
 
-	public SessionDto(String sessionId) {
-		this.method = "session_share";
+	public UuidResponse(String sessionId) {
+		this.method = "uuid";
 		this.sessionId = sessionId;
 	}
 }

@@ -67,11 +67,11 @@ public class Game {
 			.allMatch(player -> player.isStuck(decksBoard.stream().map(Deck::peek).collect(Collectors.toList())));
 	}
 
-	public Boolean recover(int playerNumber) {
+	public void recover(int playerNumber) {
 		if (playerNumber >= players.size()) {
 			throw new InvalidPlayerNumberException(playerNumber);
 		}
-		return players.get(playerNumber).recover();
+		players.get(playerNumber).recover();
 	}
 
 	public int winner() {
@@ -105,5 +105,9 @@ public class Game {
 
 	public int totalDecks() {
 		return decksBoard.size();
+	}
+
+	public void remove(int playerNumber) {
+		players.remove(playerNumber);
 	}
 }

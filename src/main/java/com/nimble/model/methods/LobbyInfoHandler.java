@@ -3,8 +3,8 @@ package com.nimble.model.methods;
 import com.nimble.configurations.Messenger;
 import com.nimble.dtos.requests.LobbyInfoRequest;
 import com.nimble.dtos.responses.LobbyInfoResponse;
-import com.nimble.model.Lobby;
-import com.nimble.model.User;
+import com.nimble.model.server.Lobby;
+import com.nimble.model.server.User;
 import com.nimble.repositories.NimbleRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,11 +41,7 @@ public class LobbyInfoHandler extends MethodHandler {
 
 		messenger.send(
 			user.getId(),
-			new LobbyInfoResponse(
-				lobby.getPlayerNumber(user.getId()),
-				nimbleRepository.usersDtoAtLobby(lobby.getId()),
-				lobby.getId()
-			)
+			new LobbyInfoResponse(lobby.isOwner(user.getId()), nimbleRepository.usersDtoAtLobby(lobby.getId()), lobby.getId())
 		);
 
 		logger.info(String.format("Listing players for %s", user.getName()));

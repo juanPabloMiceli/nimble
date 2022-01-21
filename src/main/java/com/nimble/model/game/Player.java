@@ -47,12 +47,14 @@ public class Player {
 		discardDeck.add(onHandsDeck.draw());
 	}
 
-	public Boolean recover() {
+	public void recover() {
 		if (discardDeck.size() <= 1) {
-			return false;
+			while (!onHandsDeck.isEmpty()) {
+				discard();
+			}
+			return;
 		}
 		onHandsDeck.add(discardDeck.draw());
-		return true;
 	}
 
 	// Player plays his hand card

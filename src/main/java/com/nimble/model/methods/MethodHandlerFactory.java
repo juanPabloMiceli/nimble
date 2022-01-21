@@ -68,6 +68,8 @@ public class MethodHandlerFactory {
 					nimbleRepository,
 					messenger
 				);
+			case "uuid":
+				return new UuidHandler(session, mapper.readValue(payload, UuidRequest.class), nimbleRepository, messenger);
 			default:
 				throw new InvalidMethodException(method);
 		}

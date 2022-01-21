@@ -3,9 +3,6 @@ buildscript {
 		mavenCentral()
 	}
 
-	dependencies {
-	}
-
 }
 
 plugins {
@@ -30,11 +27,12 @@ spotless {
 						'useTabs': true,
 						'printWidth': 120
 				])
-				.npmExecutable('/usr/local/bin/npm')
 
 		importOrder('', 'java', 'javax', 'jakarta')
 	}
 }
+
+spotlessJavaCheck.dependsOn(tasks.spotlessApply)
 
 configurations {
 	compileOnly {

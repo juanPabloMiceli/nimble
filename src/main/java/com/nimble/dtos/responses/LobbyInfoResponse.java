@@ -17,16 +17,15 @@ public class LobbyInfoResponse {
 
 	private String method;
 
-	@JsonProperty("player_number")
-	private int playerNumber; // TODO: Dejar de hardcodear
+	private boolean owner;
 
 	@JsonProperty("lobby_id")
 	private String lobbyId;
 
 	private List<UserDto> users;
 
-	public LobbyInfoResponse(int playerNumber, List<UserDto> users, String lobbyId) {
-		this.playerNumber = playerNumber;
+	public LobbyInfoResponse(boolean owner, List<UserDto> users, String lobbyId) {
+		this.owner = owner;
 		this.users = users;
 		this.lobbyId = lobbyId;
 		this.method = "lobby_info";

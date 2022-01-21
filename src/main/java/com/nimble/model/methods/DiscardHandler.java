@@ -4,8 +4,10 @@ import com.nimble.configurations.Messenger;
 import com.nimble.dtos.game.GameDto;
 import com.nimble.dtos.requests.DiscardRequest;
 import com.nimble.dtos.responses.GameStateResponse;
-import com.nimble.model.Lobby;
-import com.nimble.model.User;
+import com.nimble.dtos.responses.errors.InvalidMoveErrorResponse;
+import com.nimble.dtos.responses.errors.UnexpectedErrorResponse;
+import com.nimble.model.server.Lobby;
+import com.nimble.model.server.User;
 import com.nimble.repositories.NimbleRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,14 +39,42 @@ public class DiscardHandler extends MethodHandler {
 
 	@Override
 	public void run() {
-		// TODO: Chequear user/lobby existen, chequear que este iniciado
+		if (!nimbleRepository.containsUserKey(payload.getSessionId())) {
+			messenger.send(
+				session,
+				new UnexpectedErrorResponse("Fijate que queres recuperar una carta pero no tenes una sesion!")
+			);
+			logger.error("Alguien que no existe quiere recuperar una carta!");
+			return;
+		}
 		User user = nimbleRepository.getUser(payload.getSessionId());
+
+		if (!nimbleRepository.containsLobbyKey(user.getLobbyId())) {
+			logger.info(String.format("%s quiere recuperar una carta en un lobby que no existe!", user.getLobbyId()));
+			messenger.send(
+				user.getId(),
+				new UnexpectedErrorResponse(String.format("El lobby %s no existe!", user.getLobbyId()))
+			);
+			return;
+		}
 		Lobby lobby = nimbleRepository.getLobby(user.getLobbyId());
+
+		if (!lobby.isRunning()) {
+			logger.info(
+				String.format("%s quiere recuperar una carta en un lobby que no tiene una partida en curso!", user.getLobbyId())
+			);
+			messenger.send(
+				user.getId(),
+				new InvalidMoveErrorResponse(String.format("El lobby %s no tiene una partida en curso!", user.getLobbyId()))
+			);
+			return;
+		}
+
 		lobby.discard(payload.getSessionId());
 
 		for (int playerNumber = 0; playerNumber < lobby.getUsersIds().size(); playerNumber++) {
 			messenger.send(
-				lobby.getUsersIds().get(playerNumber),
+				lobby.getUser(playerNumber),
 				new GameStateResponse(
 					playerNumber,
 					nimbleRepository.usersDtoAtLobby(lobby.getId()),

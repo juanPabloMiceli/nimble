@@ -1,8 +1,9 @@
-package com.nimble.model;
+package com.nimble.model.server;
 
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.Objects;
 
@@ -18,19 +19,18 @@ public class User {
 
 	private WebSocketSession session;
 
+	private Color color;
+
 	public User(WebSocketSession session) {
 		this.session = session;
 		this.name = "";
 		this.id = session.getId();
 	}
 
-	public User(WebSocketSession session, String name) {
-		this.session = session;
-		this.name = name;
-	}
-
 	public User(User user) {
+		id = user.id;
 		name = user.name;
+		lobbyId = user.getLobbyId();
 		session = user.session;
 	}
 
@@ -68,6 +68,14 @@ public class User {
 
 	public void setLobbyId(String lobbyId) {
 		this.lobbyId = lobbyId;
+	}
+
+	public Color getColor() {
+		return color;
+	}
+
+	public void setColor(Color color) {
+		this.color = color;
 	}
 
 	@Override

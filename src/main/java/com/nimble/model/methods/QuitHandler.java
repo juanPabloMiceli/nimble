@@ -1,10 +1,14 @@
 package com.nimble.model.methods;
 
 import com.nimble.configurations.Messenger;
+import com.nimble.dtos.game.GameDto;
 import com.nimble.dtos.requests.QuitRequest;
+import com.nimble.dtos.responses.GameStateResponse;
 import com.nimble.dtos.responses.LobbyInfoResponse;
-import com.nimble.model.Lobby;
-import com.nimble.model.User;
+import com.nimble.dtos.responses.errors.UnexpectedErrorResponse;
+import com.nimble.model.server.Lobby;
+import com.nimble.model.server.LobbyIdGenerator;
+import com.nimble.model.server.User;
 import com.nimble.repositories.NimbleRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,15 +16,17 @@ import org.springframework.web.socket.WebSocketSession;
 
 public class QuitHandler extends MethodHandler {
 
-	private WebSocketSession session;
+	private final WebSocketSession session;
 
-	private QuitRequest payload;
+	private final QuitRequest payload;
 
-	private NimbleRepository nimbleRepository;
+	private final NimbleRepository nimbleRepository;
 
 	private final Logger logger = LoggerFactory.getLogger(QuitHandler.class);
 
-	private Messenger messenger;
+	private final Messenger messenger;
+
+	private final LobbyIdGenerator lobbyIdGenerator = LobbyIdGenerator.getLobbyIdGeneratorInstance();
 
 	public QuitHandler(
 		WebSocketSession session,
@@ -36,18 +42,78 @@ public class QuitHandler extends MethodHandler {
 
 	@Override
 	public void run() {
-		// TODO: Chequear user/lobby existen, chequear user pertenece al lobby
+		if (!nimbleRepository.containsUserKey(payload.getSessionId())) {
+			logger.error("Alguien que no existe quiere quitear!");
+			messenger.send(session, new UnexpectedErrorResponse("Fijate que queres quitear pero no tenes una sesion!"));
+			return;
+		}
 		User user = nimbleRepository.getUser(payload.getSessionId());
+		if (user.getLobbyId().equals("")) {
+			messenger.send(
+				user.getId(),
+				new UnexpectedErrorResponse("Fijate que queres quitear pero no perteneces a ningun lobby")
+			);
+			logger.error(String.format("%s quiere salir de un lobby pero no pertenece a ninguno!!!", user.getName()));
+			return;
+		}
+		if (!nimbleRepository.containsLobbyKey(user.getLobbyId())) {
+			logger.error(String.format("%s quiere salir del lobby %s que no existe!", user.getName(), user.getLobbyId()));
+			messenger.send(
+				session,
+				new UnexpectedErrorResponse(
+					String.format("Fijate que queres salirte de un lobby que no existe (%s)", user.getLobbyId())
+				)
+			);
+			return;
+		}
 		Lobby lobby = nimbleRepository.getLobby(user.getLobbyId());
-		lobby.remove(payload.getSessionId());
+		lobby.remove(user.getId());
+		lobby.restoreColor(user.getColor());
+		nimbleRepository.removeUser(user.getId());
 
 		for (int playerNumber = 0; playerNumber < lobby.getUsersIds().size(); playerNumber++) {
-			messenger.send(
-				lobby.getUsersIds().get(playerNumber),
-				new LobbyInfoResponse(playerNumber, nimbleRepository.usersDtoAtLobby(lobby.getId()), lobby.getId())
+			if (lobby.isRunning()) {
+				messenger.send(
+					lobby.getUser(playerNumber),
+					new GameStateResponse(
+						playerNumber,
+						nimbleRepository.usersDtoAtLobby(lobby.getId()),
+						new GameDto(lobby.getGame())
+					)
+				);
+				continue;
+			}
+			if (lobby.isReady()) {
+				messenger.send(
+					lobby.getUser(playerNumber),
+					new LobbyInfoResponse(playerNumber == 0, nimbleRepository.usersDtoAtLobby(lobby.getId()), lobby.getId())
+				);
+				continue;
+			}
+			logger.error(
+				String.format(
+					"%s quiere salirse del lobby %s pero el lobby no está ready ni running!!",
+					user.getName(),
+					lobby.getId()
+				)
 			);
+			messenger.send(
+				user.getId(),
+				new UnexpectedErrorResponse(
+					String.format(
+						"%s quiere salirse del lobby %s pero el lobby no está ready ni running!!",
+						user.getName(),
+						lobby.getId()
+					)
+				)
+			);
+			return;
 		}
-
 		logger.info(String.format("%s salió del lobby \"%s\"", user.getName(), user.getLobbyId()));
+
+		if (lobby.isEmpty()) {
+			nimbleRepository.removeLobby(lobby.getId());
+			lobbyIdGenerator.restore(lobby.getId());
+		}
 	}
 }

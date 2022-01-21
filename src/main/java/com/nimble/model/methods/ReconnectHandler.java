@@ -1,10 +1,13 @@
 package com.nimble.model.methods;
 
 import com.nimble.configurations.Messenger;
-import com.nimble.dtos.game.UserDto;
+import com.nimble.dtos.game.GameDto;
 import com.nimble.dtos.requests.ReconnectRequest;
-import com.nimble.dtos.responses.ReconnectResponse;
-import com.nimble.model.User;
+import com.nimble.dtos.responses.GameStateResponse;
+import com.nimble.dtos.responses.LobbyInfoResponse;
+import com.nimble.dtos.responses.errors.UnexpectedErrorResponse;
+import com.nimble.model.server.Lobby;
+import com.nimble.model.server.User;
 import com.nimble.repositories.NimbleRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,13 +40,64 @@ public class ReconnectHandler extends MethodHandler {
 	@Override
 	public void run() {
 		if (!nimbleRepository.containsUserKey(payload.getSessionId())) {
-			logger.error("Un boludo quiere recuperar algo que no es suyo...");
+			logger.error("Alguien quiere reconectarse sin tener una sesion!");
+			messenger.send(
+				session,
+				new UnexpectedErrorResponse("Fijate que te queres reconectar pero no tenias una sesion!")
+			);
 			return;
 		}
 		User user = nimbleRepository.getUser(payload.getSessionId());
-		logger.info(String.format("Bienvenido de nuevo %s", user.getName()));
 		user.setSession(session);
+
+		if (!nimbleRepository.containsLobbyKey(user.getLobbyId()) || user.getLobbyId().equals("")) {
+			logger.error(String.format("%s quiere reconectarse pero no pertenece a ningun lobby!", user.getLobbyId()));
+			messenger.send(session, new UnexpectedErrorResponse("Fijate que te queres reconectar pero no tenias un lobby!"));
+			return;
+		}
+		Lobby lobby = nimbleRepository.lobbyOf(user.getId());
 		nimbleRepository.putUser(payload.getSessionId(), user);
-		messenger.send(user.getId(), new ReconnectResponse(new UserDto(user)));
+		if (lobby.isRunning()) {
+			logger.info(String.format("%s quiere reconectarse a la partida %s", user.getName(), lobby.getId()));
+			messenger.send(
+				user.getId(),
+				new GameStateResponse(
+					lobby.getPlayerNumber(user.getId()),
+					nimbleRepository.usersDtoAtLobby(lobby.getId()),
+					new GameDto(lobby.getGame())
+				)
+			);
+			return;
+		}
+		if (lobby.isReady()) {
+			logger.info(String.format("%s quiere reconectarse al lobby %s", user.getName(), lobby.getId()));
+			messenger.send(
+				user.getId(),
+				new LobbyInfoResponse(
+					lobby.isOwner(user.getId()),
+					nimbleRepository.usersDtoAtLobby(lobby.getId()),
+					lobby.getId()
+				)
+			);
+			return;
+		}
+		logger.error(
+			String.format(
+				"%s quiere reconectarse al lobby %s pero el lobby no está ready ni running!!",
+				user.getName(),
+				lobby.getId()
+			)
+		);
+		messenger.send(
+			user.getId(),
+			new UnexpectedErrorResponse(
+				String.format(
+					"%s quiere reconectarse al lobby %s pero el lobby no está ready ni running!!",
+					user.getName(),
+					lobby.getId()
+				)
+			)
+		);
+		return;
 	}
 }

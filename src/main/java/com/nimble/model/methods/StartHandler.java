@@ -1,11 +1,12 @@
 package com.nimble.model.methods;
 
 import com.nimble.configurations.Messenger;
-import com.nimble.dtos.LobbyDto;
 import com.nimble.dtos.requests.StartRequest;
-import com.nimble.dtos.responses.status.SuccessfulResponse;
-import com.nimble.model.Lobby;
-import com.nimble.model.User;
+import com.nimble.dtos.responses.EnteringGameResponse;
+import com.nimble.dtos.responses.errors.StartErrorResponse;
+import com.nimble.dtos.responses.errors.UnexpectedErrorResponse;
+import com.nimble.model.server.Lobby;
+import com.nimble.model.server.User;
 import com.nimble.repositories.NimbleRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,18 +39,34 @@ public class StartHandler extends MethodHandler {
 	@Override
 	public void run() {
 		if (!nimbleRepository.containsUserKey(payload.getSessionId())) {
-			throw new RuntimeException("Alguien que no existe quiere iniciar!!!");
+			messenger.send(session, new UnexpectedErrorResponse());
+			logger.error("Alguien que no existe se quiere iniciar la partida!");
+			return;
 		}
 		User user = nimbleRepository.getUser(payload.getSessionId());
 		if (user.getLobbyId().equals("")) {
-			throw new RuntimeException("Alguien que no tiene lobby lo quiere iniciar!!!");
+			messenger.send(user.getId(), new UnexpectedErrorResponse());
+			logger.error("Alguien que no tiene lobby lo quiere iniciar!!!");
+			return;
 		}
-		// TODO: Chequear que no se haya iniciado el lobby antes
-		// TODO: Chequear que el lobby exista
+		if (!nimbleRepository.containsLobbyKey(user.getLobbyId())) {
+			logger.error(String.format("El lobby %s no existe!", user.getLobbyId()));
+			messenger.send(user.getId(), new StartErrorResponse(String.format("El lobby %s no existe!", user.getLobbyId())));
+			return;
+		}
 		Lobby lobby = nimbleRepository.getLobby(user.getLobbyId());
+		if(lobby.isRunning()){
+			logger.info(String.format("El lobby %s ya está corriendo!", user.getLobbyId()));
+			messenger.send(user.getId(), new StartErrorResponse(String.format("El lobby %s ya está corriendo!", user.getLobbyId())));
+			return;
+		}
+		if(!lobby.isOwner(user.getId())){
+			logger.error(String.format("No sos el owner para poder empezar el lobby %s", user.getLobbyId()));
+			messenger.send(user.getId(), new StartErrorResponse(String.format("No sos el owner para poder empezar el lobby %s", user.getLobbyId())));
+			return;
+		}
 		lobby.start();
-		messenger.broadcastToLobbyOf(user.getId(), new SuccessfulResponse());
-		messenger.send(user.getId(), new LobbyDto(lobby, nimbleRepository));
+		messenger.broadcastToLobbyOf(user.getId(), new EnteringGameResponse());
 		logger.info(String.format("Se inició el lobby \"%s\"", user.getLobbyId()));
 	}
 }
