@@ -55,14 +55,20 @@ public class StartHandler extends MethodHandler {
 			return;
 		}
 		Lobby lobby = nimbleRepository.getLobby(user.getLobbyId());
-		if(lobby.isRunning()){
+		if (lobby.isRunning()) {
 			logger.info(String.format("El lobby %s ya está corriendo!", user.getLobbyId()));
-			messenger.send(user.getId(), new StartErrorResponse(String.format("El lobby %s ya está corriendo!", user.getLobbyId())));
+			messenger.send(
+				user.getId(),
+				new StartErrorResponse(String.format("El lobby %s ya está corriendo!", user.getLobbyId()))
+			);
 			return;
 		}
-		if(!lobby.isOwner(user.getId())){
+		if (!lobby.isOwner(user.getId())) {
 			logger.error(String.format("No sos el owner para poder empezar el lobby %s", user.getLobbyId()));
-			messenger.send(user.getId(), new StartErrorResponse(String.format("No sos el owner para poder empezar el lobby %s", user.getLobbyId())));
+			messenger.send(
+				user.getId(),
+				new StartErrorResponse(String.format("No sos el owner para poder empezar el lobby %s", user.getLobbyId()))
+			);
 			return;
 		}
 		lobby.start();

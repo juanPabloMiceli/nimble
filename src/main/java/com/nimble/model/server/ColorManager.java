@@ -13,8 +13,6 @@ public class ColorManager {
 	private final Color green = new Color(0x4E7971);
 	private final Color orange = new Color(0xDD844C);
 
-	public ColorManager() {}
-
 	private final Map<Color, Boolean> colors = new HashMap<>() {
 		{
 			put(red, true);

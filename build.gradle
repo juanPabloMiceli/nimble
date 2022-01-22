@@ -74,6 +74,9 @@ dependencies {
 
 	//Commons Lang
 	implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
+
+	//Configuration properties
+	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 }
 
 jar{

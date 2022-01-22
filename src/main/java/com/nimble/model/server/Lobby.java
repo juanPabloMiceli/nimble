@@ -7,6 +7,7 @@ import com.nimble.model.enums.LobbyState;
 import com.nimble.model.game.Game;
 
 import java.awt.*;
+import java.time.Clock;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +25,8 @@ public class Lobby {
 
 	private final ColorManager colorManager = new ColorManager();
 
+	private TimeReferee timeReferee;
+
 	public Lobby(String id, String userId) {
 		this.id = id;
 		this.lobbyState = LobbyState.READY;
@@ -39,6 +42,7 @@ public class Lobby {
 		game = lobby.game;
 		usersIds = lobby.usersIds;
 		lobbyState = lobby.lobbyState;
+		timeReferee = lobby.timeReferee;
 	}
 
 	public void add(String userId) {
@@ -64,6 +68,7 @@ public class Lobby {
 
 	public void start() {
 		game = new Game(totalPlayers(), DECKS);
+		timeReferee = new TimeReferee(Clock.systemUTC(), this.usersIds);
 		lobbyState = LobbyState.RUNNING;
 	}
 

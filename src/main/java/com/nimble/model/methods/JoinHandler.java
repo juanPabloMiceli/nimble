@@ -70,9 +70,14 @@ public class JoinHandler extends MethodHandler {
 			return;
 		}
 
-		if(lobby.isRunning()){
-			logger.info(String.format("%s se quiere unir al lobby %s que ya está corriendo!", user.getName(), user.getLobbyId()));
-			messenger.send(user.getId(), new StartErrorResponse(String.format("El lobby %s está corriendo! Intentá en un rato", user.getLobbyId())));
+		if (lobby.isRunning()) {
+			logger.info(
+				String.format("%s se quiere unir al lobby %s que ya está corriendo!", user.getName(), user.getLobbyId())
+			);
+			messenger.send(
+				user.getId(),
+				new StartErrorResponse(String.format("El lobby %s está corriendo! Intentá en un rato", user.getLobbyId()))
+			);
 			return;
 		}
 
