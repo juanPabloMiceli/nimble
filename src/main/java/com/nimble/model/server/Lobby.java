@@ -1,6 +1,7 @@
 package com.nimble.model.server;
 
 import com.nimble.exceptions.NoAvailableColorException;
+import com.nimble.exceptions.PlayedWhenPenalizedException;
 import com.nimble.exceptions.lobby.UserAlreadyInLobbyException;
 import com.nimble.exceptions.lobby.UserDoesNotBelongToLobbyException;
 import com.nimble.model.enums.LobbyState;
@@ -92,24 +93,38 @@ public class Lobby {
 		return new ArrayList<>(usersIds);
 	}
 
-	public void discard(String userId) {
+	public void discard(String userId) throws PlayedWhenPenalizedException {
+		if (!timeReferee.isAvailable(userId)) {
+			throw new PlayedWhenPenalizedException(userId);
+		}
 		game.discard(getPlayerNumber(userId));
+		timeReferee.discardPenalize(userId);
 	}
 
-	public void recover(String userId) {
+	public void recover(String userId) throws PlayedWhenPenalizedException {
+		if (!timeReferee.isAvailable(userId)) {
+			throw new PlayedWhenPenalizedException(userId);
+		}
 		game.recover(getPlayerNumber(userId));
+		timeReferee.recoverPenalize(userId);
 	}
 
-	public Boolean playFromHand(String userId, int playTo) {
+	public Boolean playFromHand(String userId, int playTo) throws PlayedWhenPenalizedException {
+		if (!timeReferee.isAvailable(userId)) {
+			throw new PlayedWhenPenalizedException(userId);
+		}
 		if (!game.playOnHandCard(getPlayerNumber(userId), playTo)) {
+			timeReferee.wrongPlayPenalize(userId);
 			return false;
 		}
-
+		timeReferee.successfulPlayPenalize(userId);
 		if (game.isOver()) {
 			lobbyState = LobbyState.FINISHED;
+			return true;
 		}
 		if (game.isStuck()) {
 			lobbyState = LobbyState.STUCK;
+			return true;
 		}
 		return true;
 	}

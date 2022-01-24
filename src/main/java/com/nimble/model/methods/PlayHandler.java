@@ -9,6 +9,7 @@ import com.nimble.dtos.responses.TieResponse;
 import com.nimble.dtos.responses.WinnerResponse;
 import com.nimble.dtos.responses.errors.InvalidMoveErrorResponse;
 import com.nimble.dtos.responses.errors.UnexpectedErrorResponse;
+import com.nimble.exceptions.PlayedWhenPenalizedException;
 import com.nimble.model.enums.LobbyState;
 import com.nimble.model.server.Lobby;
 import com.nimble.model.server.User;
@@ -71,9 +72,15 @@ public class PlayHandler extends MethodHandler {
 
 		logger.info(String.format("%s quiere jugar desde la mano al mazo %d", user.getName(), payload.getPlayTo()));
 
-		if (!lobby.playFromHand(payload.getSessionId(), payload.getPlayTo())) {
-			logger.error(String.format("Sabes jugar %s?\n", user.getName()));
-			messenger.send(user.getId(), new InvalidMoveErrorResponse("Te equivocaste bajando la carta"));
+		try {
+			if (!lobby.playFromHand(payload.getSessionId(), payload.getPlayTo())) {
+				logger.error(String.format("Sabes jugar %s?\n", user.getName()));
+				messenger.send(user.getId(), new InvalidMoveErrorResponse("Te equivocaste bajando la carta"));
+				return;
+			}
+		} catch (PlayedWhenPenalizedException e) {
+			logger.info(String.format("%s quiere jugar una carta pero está penalizado!", user.getName()));
+			//			messenger.send(user.getId(), new InvalidMoveErrorResponse("Jugaste antes de tiempo brodi!"));
 			return;
 		}
 

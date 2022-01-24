@@ -6,6 +6,7 @@ import com.nimble.dtos.requests.DiscardRequest;
 import com.nimble.dtos.responses.GameStateResponse;
 import com.nimble.dtos.responses.errors.InvalidMoveErrorResponse;
 import com.nimble.dtos.responses.errors.UnexpectedErrorResponse;
+import com.nimble.exceptions.PlayedWhenPenalizedException;
 import com.nimble.model.server.Lobby;
 import com.nimble.model.server.User;
 import com.nimble.repositories.NimbleRepository;
@@ -50,7 +51,7 @@ public class DiscardHandler extends MethodHandler {
 		User user = nimbleRepository.getUser(payload.getSessionId());
 
 		if (!nimbleRepository.containsLobbyKey(user.getLobbyId())) {
-			logger.info(String.format("%s quiere recuperar una carta en un lobby que no existe!", user.getLobbyId()));
+			logger.info(String.format("%s quiere recuperar una carta en un lobby que no existe!", user.getName()));
 			messenger.send(
 				user.getId(),
 				new UnexpectedErrorResponse(String.format("El lobby %s no existe!", user.getLobbyId()))
@@ -61,7 +62,7 @@ public class DiscardHandler extends MethodHandler {
 
 		if (!lobby.isRunning()) {
 			logger.info(
-				String.format("%s quiere recuperar una carta en un lobby que no tiene una partida en curso!", user.getLobbyId())
+				String.format("%s quiere recuperar una carta en un lobby que no tiene una partida en curso!", user.getName())
 			);
 			messenger.send(
 				user.getId(),
@@ -70,7 +71,13 @@ public class DiscardHandler extends MethodHandler {
 			return;
 		}
 
-		lobby.discard(payload.getSessionId());
+		try {
+			lobby.discard(payload.getSessionId());
+		} catch (PlayedWhenPenalizedException e) {
+			logger.info(String.format("%s quiere descartar una carta pero está penalizado!", user.getName()));
+			//			messenger.send(user.getId(), new InvalidMoveErrorResponse("Jugaste antes de tiempo brodi!"));
+			return;
+		}
 
 		for (int playerNumber = 0; playerNumber < lobby.getUsersIds().size(); playerNumber++) {
 			messenger.send(

@@ -13,7 +13,7 @@ public class TimeReferee {
 
 	private final Clock clock;
 	private final Map<String, Instant> nextValidInstant = new HashMap<>();
-	private final TimePenalties timePenalties = new TimePenalties();
+	private TimePenalties timePenalties = new TimePenalties();
 
 	public TimeReferee(Clock clock, List<String> usersIds) {
 		this.clock = clock;
@@ -22,10 +22,30 @@ public class TimeReferee {
 		System.out.println(timePenalties);
 	}
 
-	public void penalize(String userId, Duration duration) {
+	private void penalize(String userId, Duration duration) {
 		if (!nextValidInstant.containsKey(userId)) {
 			throw new UserDoesNotBelongToLobbyException(userId, ""); //TODO: Migrar a user not found
 		}
 		nextValidInstant.put(userId, clock.instant().plusMillis(duration.toMillis()));
+	}
+
+	public void discardPenalize(String userId) {
+		penalize(userId, timePenalties.getDiscardPenalty());
+	}
+
+	public void recoverPenalize(String userId) {
+		penalize(userId, timePenalties.getRecoverPenalty());
+	}
+
+	public void successfulPlayPenalize(String userId) {
+		penalize(userId, timePenalties.getSuccessfulPlayPenalty());
+	}
+
+	public void wrongPlayPenalize(String userId) {
+		penalize(userId, timePenalties.getWrongPlayPenalty());
+	}
+
+	public boolean isAvailable(String userId) {
+		return clock.instant().isAfter(nextValidInstant.get(userId));
 	}
 }

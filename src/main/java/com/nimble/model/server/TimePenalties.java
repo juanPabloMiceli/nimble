@@ -1,16 +1,13 @@
 package com.nimble.model.server;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-
 import java.time.Duration;
 
-@ConfigurationProperties(prefix = "penalties")
 public class TimePenalties {
 
-	private Duration discardPenalty;
-	private Duration wrongPlayPenalty;
-	private Duration recoverPenalty;
-	private Duration successfulPlayPenalty;
+	private Duration discardPenalty = Duration.ofMillis(250);
+	private Duration wrongPlayPenalty = Duration.ofMillis(1000);
+	private Duration recoverPenalty = Duration.ofMillis(500);
+	private Duration successfulPlayPenalty = Duration.ofMillis(250);
 
 	public Duration getDiscardPenalty() {
 		return discardPenalty;
@@ -49,13 +46,13 @@ public class TimePenalties {
 		return (
 			"TimePenalties{" +
 			"discardPenalty=" +
-			discardPenalty +
+			discardPenalty.toMillis() +
 			", wrongPlayPenalty=" +
-			wrongPlayPenalty +
+			wrongPlayPenalty.toMillis() +
 			", recoverPenalty=" +
-			recoverPenalty +
+			recoverPenalty.toMillis() +
 			", successfulPlayPenalty=" +
-			successfulPlayPenalty +
+			successfulPlayPenalty.toMillis() +
 			'}'
 		);
 	}

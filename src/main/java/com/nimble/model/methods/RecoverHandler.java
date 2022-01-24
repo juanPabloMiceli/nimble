@@ -6,6 +6,7 @@ import com.nimble.dtos.requests.RecoverRequest;
 import com.nimble.dtos.responses.GameStateResponse;
 import com.nimble.dtos.responses.errors.InvalidMoveErrorResponse;
 import com.nimble.dtos.responses.errors.UnexpectedErrorResponse;
+import com.nimble.exceptions.PlayedWhenPenalizedException;
 import com.nimble.model.server.Lobby;
 import com.nimble.model.server.User;
 import com.nimble.repositories.NimbleRepository;
@@ -67,7 +68,13 @@ public class RecoverHandler extends MethodHandler {
 			return;
 		}
 
-		lobby.recover(user.getId());
+		try {
+			lobby.recover(user.getId());
+		} catch (PlayedWhenPenalizedException e) {
+			logger.info(String.format("%s quiere recuperar una carta pero está penalizado!", user.getName()));
+			//			messenger.send(user.getId(), new InvalidMoveErrorResponse("Jugaste antes de tiempo brodi!"));
+			return;
+		}
 
 		logger.info(String.format("%s recuperó una carta", user.getName()));
 
