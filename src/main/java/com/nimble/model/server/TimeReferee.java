@@ -13,13 +13,12 @@ public class TimeReferee {
 
 	private final Clock clock;
 	private final Map<String, Instant> nextValidInstant = new HashMap<>();
-	private TimePenalties timePenalties = new TimePenalties();
+	private final TimePenalties timePenalties = new TimePenalties();
 
 	public TimeReferee(Clock clock, List<String> usersIds) {
 		this.clock = clock;
 		Instant now = clock.instant();
 		usersIds.forEach(userId -> nextValidInstant.put(userId, now));
-		System.out.println(timePenalties);
 	}
 
 	private void penalize(String userId, Duration duration) {
