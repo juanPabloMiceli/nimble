@@ -114,7 +114,12 @@ public class JoinHandler extends MethodHandler {
 			.forEach(userId -> {
 				messenger.send(
 					userId,
-					new LobbyInfoResponse(lobby.isOwner(userId), nimbleRepository.usersDtoAtLobby(lobby.getId()), lobby.getId())
+					new LobbyInfoResponse(
+						lobby.isOwner(userId),
+						nimbleRepository.usersDtoAtLobby(lobby.getId()),
+						lobby.getId(),
+						lobby.getPenalties()
+					)
 				);
 			});
 

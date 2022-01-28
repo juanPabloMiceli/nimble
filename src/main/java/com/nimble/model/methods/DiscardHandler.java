@@ -45,7 +45,7 @@ public class DiscardHandler extends MethodHandler {
 				session,
 				new UnexpectedErrorResponse("Fijate que queres recuperar una carta pero no tenes una sesion!")
 			);
-			logger.error("Alguien que no existe quiere recuperar una carta!");
+			logger.warn("Alguien que no existe quiere recuperar una carta!");
 			return;
 		}
 		User user = nimbleRepository.getUser(payload.getSessionId());
@@ -75,7 +75,6 @@ public class DiscardHandler extends MethodHandler {
 			lobby.discard(payload.getSessionId());
 		} catch (PlayedWhenPenalizedException e) {
 			logger.info(String.format("%s quiere descartar una carta pero está penalizado!", user.getName()));
-			//			messenger.send(user.getId(), new InvalidMoveErrorResponse("Jugaste antes de tiempo brodi!"));
 			return;
 		}
 

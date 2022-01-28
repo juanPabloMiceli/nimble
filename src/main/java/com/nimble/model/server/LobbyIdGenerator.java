@@ -23,7 +23,6 @@ public class LobbyIdGenerator {
 
 	private LobbyIdGenerator() {
 		this.availableIds = generateIds();
-		System.out.println(this.availableIds);
 	}
 
 	private List<String> generateIds() {

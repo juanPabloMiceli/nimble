@@ -1,4 +1,4 @@
-package com.nimble.dtos;
+package com.nimble.dtos.responses;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

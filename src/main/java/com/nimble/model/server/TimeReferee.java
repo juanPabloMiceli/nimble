@@ -13,7 +13,7 @@ public class TimeReferee {
 
 	private final Clock clock;
 	private final Map<String, Instant> nextValidInstant = new HashMap<>();
-	private final TimePenalties timePenalties = new TimePenalties();
+	private TimePenalties timePenalties = TimePenalties.builder().build();
 
 	public TimeReferee(Clock clock, List<String> usersIds) {
 		this.clock = clock;
@@ -46,5 +46,13 @@ public class TimeReferee {
 
 	public boolean isAvailable(String userId) {
 		return clock.instant().isAfter(nextValidInstant.get(userId));
+	}
+
+	public TimePenalties getPenalties() {
+		return timePenalties;
+	}
+
+	public void setPenalties(TimePenalties penalties) {
+		this.timePenalties = penalties;
 	}
 }

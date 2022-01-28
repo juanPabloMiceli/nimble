@@ -86,7 +86,12 @@ public class QuitHandler extends MethodHandler {
 			if (lobby.isReady()) {
 				messenger.send(
 					lobby.getUser(playerNumber),
-					new LobbyInfoResponse(playerNumber == 0, nimbleRepository.usersDtoAtLobby(lobby.getId()), lobby.getId())
+					new LobbyInfoResponse(
+						playerNumber == 0,
+						nimbleRepository.usersDtoAtLobby(lobby.getId()),
+						lobby.getId(),
+						lobby.getPenalties()
+					)
 				);
 				continue;
 			}

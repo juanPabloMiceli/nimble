@@ -70,6 +70,13 @@ public class MethodHandlerFactory {
 				);
 			case "uuid":
 				return new UuidHandler(session, mapper.readValue(payload, UuidRequest.class), nimbleRepository, messenger);
+			case "set_penalties":
+				return new SetPenaltiesHandler(
+					session,
+					mapper.readValue(payload, SetPenaltiesRequest.class),
+					nimbleRepository,
+					messenger
+				);
 			default:
 				throw new InvalidMethodException(method);
 		}

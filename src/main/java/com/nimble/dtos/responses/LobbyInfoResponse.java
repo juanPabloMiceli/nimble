@@ -1,7 +1,9 @@
 package com.nimble.dtos.responses;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.nimble.dtos.game.TimePenaltiesDto;
 import com.nimble.dtos.game.UserDto;
+import com.nimble.model.server.TimePenalties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +17,7 @@ import java.util.List;
 @Setter
 public class LobbyInfoResponse {
 
-	private String method;
+	private final String method = "lobby_info";
 
 	private boolean owner;
 
@@ -24,10 +26,12 @@ public class LobbyInfoResponse {
 
 	private List<UserDto> users;
 
-	public LobbyInfoResponse(boolean owner, List<UserDto> users, String lobbyId) {
+	private TimePenaltiesDto timePenalties;
+
+	public LobbyInfoResponse(boolean owner, List<UserDto> users, String lobbyId, TimePenalties timePenalties) {
 		this.owner = owner;
 		this.users = users;
 		this.lobbyId = lobbyId;
-		this.method = "lobby_info";
+		this.timePenalties = new TimePenaltiesDto(timePenalties);
 	}
 }

@@ -190,4 +190,15 @@ public class Lobby {
 	public void restoreColor(Color color) {
 		colorManager.restoreColor(color);
 	}
+
+	public void setPenalties(TimePenalties penalties) {
+		timeReferee.setPenalties(penalties);
+	}
+
+	public TimePenalties getPenalties() {
+		if (timeReferee == null) {
+			return null;
+		}
+		return timeReferee.getPenalties();
+	}
 }

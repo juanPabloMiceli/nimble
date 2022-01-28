@@ -76,7 +76,8 @@ public class ReconnectHandler extends MethodHandler {
 				new LobbyInfoResponse(
 					lobby.isOwner(user.getId()),
 					nimbleRepository.usersDtoAtLobby(lobby.getId()),
-					lobby.getId()
+					lobby.getId(),
+					lobby.getPenalties()
 				)
 			);
 			return;

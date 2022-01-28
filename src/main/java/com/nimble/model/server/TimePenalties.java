@@ -1,45 +1,25 @@
 package com.nimble.model.server;
 
+import lombok.*;
+
 import java.time.Duration;
 
+@Getter
+@Setter
+@Builder
 public class TimePenalties {
 
+	@Builder.Default
 	private Duration discardPenalty = Duration.ofMillis(250);
+
+	@Builder.Default
 	private Duration wrongPlayPenalty = Duration.ofMillis(1000);
+
+	@Builder.Default
 	private Duration recoverPenalty = Duration.ofMillis(500);
+
+	@Builder.Default
 	private Duration successfulPlayPenalty = Duration.ofMillis(250);
-
-	public Duration getDiscardPenalty() {
-		return discardPenalty;
-	}
-
-	public void setDiscardPenalty(Duration discardPenalty) {
-		this.discardPenalty = discardPenalty;
-	}
-
-	public Duration getWrongPlayPenalty() {
-		return wrongPlayPenalty;
-	}
-
-	public void setWrongPlayPenalty(Duration wrongPlayPenalty) {
-		this.wrongPlayPenalty = wrongPlayPenalty;
-	}
-
-	public Duration getRecoverPenalty() {
-		return recoverPenalty;
-	}
-
-	public void setRecoverPenalty(Duration recoverPenalty) {
-		this.recoverPenalty = recoverPenalty;
-	}
-
-	public Duration getSuccessfulPlayPenalty() {
-		return successfulPlayPenalty;
-	}
-
-	public void setSuccessfulPlayPenalty(Duration successfulPlayPenalty) {
-		this.successfulPlayPenalty = successfulPlayPenalty;
-	}
 
 	@Override
 	public String toString() {

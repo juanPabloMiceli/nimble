@@ -1,8 +1,8 @@
 package com.nimble.model.methods;
 
 import com.nimble.configurations.Messenger;
-import com.nimble.dtos.UuidResponse;
 import com.nimble.dtos.requests.UuidRequest;
+import com.nimble.dtos.responses.UuidResponse;
 import com.nimble.model.server.User;
 import com.nimble.repositories.NimbleRepository;
 import org.slf4j.Logger;
