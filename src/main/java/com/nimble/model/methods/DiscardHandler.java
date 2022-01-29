@@ -7,6 +7,7 @@ import com.nimble.dtos.responses.GameStateResponse;
 import com.nimble.dtos.responses.errors.InvalidMoveErrorResponse;
 import com.nimble.dtos.responses.errors.UnexpectedErrorResponse;
 import com.nimble.exceptions.PlayedWhenPenalizedException;
+import com.nimble.exceptions.game.InvalidPlayerNumberException;
 import com.nimble.model.server.Lobby;
 import com.nimble.model.server.User;
 import com.nimble.repositories.NimbleRepository;
@@ -79,14 +80,18 @@ public class DiscardHandler extends MethodHandler {
 		}
 
 		for (int playerNumber = 0; playerNumber < lobby.getUsersIds().size(); playerNumber++) {
-			messenger.send(
-				lobby.getUser(playerNumber),
-				new GameStateResponse(
-					playerNumber,
-					nimbleRepository.usersDtoAtLobby(lobby.getId()),
-					new GameDto(lobby.getGame())
-				)
-			);
+			try {
+				messenger.send(
+					lobby.getUserId(playerNumber),
+					new GameStateResponse(
+						playerNumber,
+						nimbleRepository.usersDtoAtLobby(lobby.getId()),
+						new GameDto(lobby.getGame())
+					)
+				);
+			} catch (InvalidPlayerNumberException e) {
+				throw new RuntimeException("WUT");
+			}
 		}
 
 		logger.info(String.format("%s levantó una carta", user.getName()));

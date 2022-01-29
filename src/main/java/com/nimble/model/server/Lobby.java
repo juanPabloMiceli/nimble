@@ -2,6 +2,7 @@ package com.nimble.model.server;
 
 import com.nimble.exceptions.NoAvailableColorException;
 import com.nimble.exceptions.PlayedWhenPenalizedException;
+import com.nimble.exceptions.game.InvalidPlayerNumberException;
 import com.nimble.exceptions.lobby.UserAlreadyInLobbyException;
 import com.nimble.exceptions.lobby.UserDoesNotBelongToLobbyException;
 import com.nimble.model.enums.LobbyState;
@@ -156,9 +157,9 @@ public class Lobby {
 		return lobbyState.equals(LobbyState.READY);
 	}
 
-	public String getUser(Integer playerNumber) {
+	public String getUserId(Integer playerNumber) throws InvalidPlayerNumberException {
 		if (playerNumber >= usersIds.size()) {
-			throw new RuntimeException("Querias acceder a un user por indice pero tiraste un indice muy alto!");
+			throw new InvalidPlayerNumberException(playerNumber);
 		}
 		return usersIds.get(playerNumber);
 	}

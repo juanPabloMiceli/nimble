@@ -6,6 +6,7 @@ import com.nimble.dtos.requests.QuitRequest;
 import com.nimble.dtos.responses.GameStateResponse;
 import com.nimble.dtos.responses.LobbyInfoResponse;
 import com.nimble.dtos.responses.errors.UnexpectedErrorResponse;
+import com.nimble.exceptions.game.InvalidPlayerNumberException;
 import com.nimble.model.server.Lobby;
 import com.nimble.model.server.LobbyIdGenerator;
 import com.nimble.model.server.User;
@@ -73,26 +74,34 @@ public class QuitHandler extends MethodHandler {
 
 		for (int playerNumber = 0; playerNumber < lobby.getUsersIds().size(); playerNumber++) {
 			if (lobby.isRunning()) {
-				messenger.send(
-					lobby.getUser(playerNumber),
-					new GameStateResponse(
-						playerNumber,
-						nimbleRepository.usersDtoAtLobby(lobby.getId()),
-						new GameDto(lobby.getGame())
-					)
-				);
+				try {
+					messenger.send(
+						lobby.getUserId(playerNumber),
+						new GameStateResponse(
+							playerNumber,
+							nimbleRepository.usersDtoAtLobby(lobby.getId()),
+							new GameDto(lobby.getGame())
+						)
+					);
+				} catch (InvalidPlayerNumberException e) {
+					throw new RuntimeException("WUT");
+				}
 				continue;
 			}
 			if (lobby.isReady()) {
-				messenger.send(
-					lobby.getUser(playerNumber),
-					new LobbyInfoResponse(
-						playerNumber == 0,
-						nimbleRepository.usersDtoAtLobby(lobby.getId()),
-						lobby.getId(),
-						lobby.getPenalties()
-					)
-				);
+				try {
+					messenger.send(
+						lobby.getUserId(playerNumber),
+						new LobbyInfoResponse(
+							playerNumber == 0,
+							nimbleRepository.usersDtoAtLobby(lobby.getId()),
+							lobby.getId(),
+							lobby.getPenalties()
+						)
+					);
+				} catch (InvalidPlayerNumberException e) {
+					throw new RuntimeException("WUT");
+				}
 				continue;
 			}
 			logger.error(

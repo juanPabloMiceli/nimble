@@ -77,6 +77,8 @@ public class MethodHandlerFactory {
 					nimbleRepository,
 					messenger
 				);
+			case "kick":
+				return new KickHandler(session, mapper.readValue(payload, KickRequest.class), nimbleRepository, messenger);
 			default:
 				throw new InvalidMethodException(method);
 		}
